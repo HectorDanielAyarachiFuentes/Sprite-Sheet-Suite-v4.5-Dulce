@@ -1,21 +1,35 @@
-/* --- PHOTOSHOP UI THEME (FUNCTIONAL) --- */
+/* ══════════════════════════════════════════
+   DULCE THEME — Sprite Sheet Suite v4.5
+   Deep purple-dark palette inspired by
+   Tokyo Night. Accent: violet + candy pink.
+══════════════════════════════════════════ */
 :root {
-    --ps-bg: #535353;
-    --ps-bg-dark: #252525;
-    --ps-bg-panel: #323232;
-    --ps-bg-panel-header: #3e3e3e;
-    --ps-border-light: #4a4a4a;
-    --ps-border-dark: #181818;
-    --ps-text-light: #d1d1d1;
-    --ps-text-medium: #8e8e8e;
-    --ps-accent-blue: #1563f0;
-    --ps-input-bg: #2d2d2d;
-    --ps-button-bg: #4a4a4a;
-    --ps-button-hover-bg: #5e5e5e;
+    /* ─ Background scale ─ */
+    --ps-bg: #1a1b26;
+    --ps-bg-dark: #0f1117;
+    --ps-bg-panel: #1f2035;
+    --ps-bg-panel-header: #252743;
+    --ps-border-light: #383a5e;
+    --ps-border-dark: #0d0e1c;
+    /* ─ Text ─ */
+    --ps-text-light: #c0caf5;
+    --ps-text-medium: #7982a9;
+    /* ─ Accent palette ─ */
+    --ps-accent-blue: #7aa2f7;
+    --dulce-violet: #9d7cd8;
+    --dulce-pink: #f7768e;
+    --dulce-mint: #73daca;
+    --dulce-gold: #e0af68;
+    /* ─ Controls ─ */
+    --ps-input-bg: #13141f;
+    --ps-button-bg: #363755;
+    --ps-button-hover-bg: #44466a;
+    /* ─ Semantic ─ */
     --danger: #f7768e;
     --warning: #e0af68;
     --primary: #7aa2f7;
-    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* ─ Typography ─ */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-mono: "SF Mono", "Consolas", "Courier New", monospace;
 }
 
@@ -41,19 +55,62 @@ p { margin: 0; }
 .main-content { display: grid; grid-template-columns: 48px 1fr 280px; flex-grow: 1; min-height: 0; transition: grid-template-columns 0.2s ease-in-out; }
 .photoshop-ui.panels-collapsed .main-content { grid-template-columns: 48px 1fr 30px; }
 
-/* --- Top Options Bar --- */
+/* --- Top Options Bar (Dulce) --- */
 .options-bar {
-    background-color: var(--ps-bg-panel);
-    border-bottom: 1px solid var(--ps-border-dark);
+    background: linear-gradient(90deg, #181929 0%, #1e1f36 55%, #1c1d33 100%);
+    border-bottom: 1px solid rgba(122,162,247,0.1);
+    box-shadow: 0 1px 0 rgba(157,124,216,0.06), 0 2px 20px rgba(0,0,0,0.5);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 15px;
-    height: 50px;
+    padding: 0 16px;
+    height: 52px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
 }
-.app-title p { font-size: 11px; color: var(--ps-text-medium); }
-.main-actions { display: flex; align-items: center; gap: 10px; }
+/* Subtle gradient glow line along the very top */
+.options-bar::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(157,124,216,0.45) 25%,
+        rgba(122,162,247,0.6) 55%,
+        rgba(115,218,202,0.3) 80%,
+        transparent 100%);
+}
+/* ─ App branding ─ */
+.app-title { display: flex; align-items: center; gap: 10px; }
+.app-logo {
+    width: 30px; height: 30px;
+    background: rgba(122,162,247,0.07);
+    border: 1px solid rgba(122,162,247,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(122,162,247,0.08);
+}
+.app-name-group h1 {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.15px;
+    color: var(--ps-text-light); margin: 0; padding: 0; border: none;
+}
+.app-name-text { color: #c0caf5; }
+.version-badge {
+    background: rgba(122,162,247,0.12);
+    border: 1px solid rgba(122,162,247,0.25);
+    color: #7aa2f7;
+    border-radius: 4px; padding: 1px 6px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.9px;
+    text-transform: uppercase; line-height: 1.5;
+}
+.codename-tag {
+    color: #f7768e; font-size: 10px; font-style: italic;
+    opacity: 0.8; letter-spacing: 0.2px; font-weight: 500;
+}
+.app-name-group p { font-size: 10.5px; color: var(--ps-text-medium); margin: 0; }
+.main-actions { display: flex; align-items: center; gap: 8px; }
 
 .zoom-controls {
     display: flex;
@@ -95,38 +152,61 @@ p { margin: 0; }
 .snap-controls input[type="checkbox"] { margin: 0; cursor: pointer; }
 
 
-/* --- Left Toolbar --- */
+/* --- Left Toolbar (Dulce) --- */
 .left-toolbar {
-    background: var(--ps-bg-panel);
+    background: linear-gradient(180deg, #1c1d30 0%, #191a2a 100%);
     border-right: 1px solid var(--ps-border-dark);
-    padding: 10px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+    padding: 8px 0;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 3px;
 }
 .tool-btn {
-    width: 36px; height: 32px;
+    width: 36px; height: 34px;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 5px;
     cursor: pointer;
-    color: var(--ps-text-light);
-    transition: all 0.1s ease;
+    color: #606285;
+    transition: background 0.15s, border-color 0.15s, color 0.15s,
+                box-shadow 0.15s, transform 0.08s;
 }
-.tool-btn:hover { background-color: var(--ps-button-hover-bg); border-color: var(--ps-border-light); }
-.tool-btn:disabled { color: #666; cursor: not-allowed; background: transparent !important; }
+.tool-btn:hover {
+    background: rgba(122,162,247,0.1);
+    border-color: rgba(122,162,247,0.22);
+    color: var(--ps-text-light);
+}
+.tool-btn:active:not(:disabled) { transform: scale(0.9); }
+.tool-btn:disabled { color: #2e3050; cursor: not-allowed; background: transparent !important; }
 .tool-btn svg { width: 100%; height: 100%; overflow: visible; }
-#lock-frames-button.locked { background-color: var(--danger); }
-.left-toolbar .separator { height: 1px; width: 80%; background-color: var(--ps-border-light); margin: 5px 0; }
-
+#lock-frames-button.locked {
+    background: rgba(247,118,142,0.18);
+    border-color: rgba(247,118,142,0.35);
+    color: #f7768e;
+}
+.left-toolbar .separator {
+    height: 1px; width: 70%;
+    background: linear-gradient(90deg, transparent, rgba(122,162,247,0.2), transparent);
+    margin: 4px 0;
+}
+/* Active tool — violet glow */
 .tool-btn.active {
-    background-color: var(--ps-accent-blue);
-    border-color: #0d46a9;
+    background: linear-gradient(135deg,
+        rgba(122,162,247,0.18) 0%,
+        rgba(157,124,216,0.16) 100%);
+    border-color: rgba(122,162,247,0.38);
+    color: #a8beff;
+    box-shadow: 0 0 12px rgba(122,162,247,0.18),
+                inset 0 0 8px rgba(122,162,247,0.05);
 }
 .tool-btn.active:hover {
-    background-color: #1a6ff0;
+    background: linear-gradient(135deg,
+        rgba(122,162,247,0.26) 0%,
+        rgba(157,124,216,0.22) 100%);
+    border-color: rgba(122,162,247,0.55);
+    color: #c0d0ff;
+    box-shadow: 0 0 16px rgba(122,162,247,0.26),
+                inset 0 0 10px rgba(122,162,247,0.08);
 }
 
 /* --- Pop-up de Opciones de Herramientas --- */
@@ -170,7 +250,13 @@ p { margin: 0; }
 .help-text-popup b { color: var(--ps-text-light); }
 
 /* --- Workspace --- */
-.workspace { background-color: var(--ps-bg); display: flex; flex-direction: column; min-width: 0; padding: 10px; }
+.workspace {
+    background: #14151f;
+    background-image:
+        radial-gradient(ellipse at 15% 15%, rgba(122,162,247,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 85%, rgba(157,124,216,0.06) 0%, transparent 50%);
+    display: flex; flex-direction: column; min-width: 0; padding: 10px;
+}
 .document-window { flex-grow: 1; display: flex; flex-direction: column; min-height: 0; border: 1px solid var(--ps-border-dark); border-radius: 4px; }
 .document-tab { background-color: var(--ps-bg-panel-header); padding: 5px 10px; border-bottom: 1px solid var(--ps-border-dark); display: flex; justify-content: space-between; align-items: center; }
 .close-tab-btn { background: none; border: none; color: var(--ps-text-medium); cursor: pointer; font-size: 16px; padding: 0 5px; }
@@ -181,7 +267,15 @@ p { margin: 0; }
     grid-template-rows: 30px 1fr;
     width: 100%;
     height: 100%;
-    background-color: var(--ps-bg-dark);
+    /* Subtle checkerboard — shows transparency area */
+    background-color: #0c0d1a;
+    background-image:
+        linear-gradient(45deg, #111220 25%, transparent 25%),
+        linear-gradient(-45deg, #111220 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #111220 75%),
+        linear-gradient(-45deg, transparent 75%, #111220 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0;
     overflow: auto;
 }
 .ruler-corner { position: sticky; top: 0; left: 0; z-index: 20; background-color: var(--ps-bg-panel); border-right: 1px solid var(--ps-border-light); border-bottom: 1px solid var(--ps-border-light); }
@@ -206,22 +300,112 @@ p { margin: 0; }
 
 
 /* --- Right Panel Stack --- */
-.right-panel-stack { background: var(--ps-bg-panel); border-left: 1px solid var(--ps-border-dark); display: flex; flex-direction: column; overflow: hidden; }
-.panel-header-icons { background-color: var(--ps-bg-panel-header); padding: 5px; text-align: right; border-bottom: 1px solid var(--ps-border-dark); }
-.collapse-panels-btn { background: none; border: none; color: var(--ps-text-medium); font-size: 14px; cursor: pointer; }
-.panel-content { flex-grow: 1; overflow: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
-.photoshop-ui.panels-collapsed .panel-content { display: none; }
-.photoshop-ui.panels-collapsed .panel-header-icons { text-align: center; }
+/* ===== Right Panel Stack ===== */
+.right-panel-stack {
+    background: var(--ps-bg-panel);
+    border-left: 1px solid var(--ps-border-dark);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    min-height: 0; /* bound by grid cell so scroll works */
+}
+.panel-header-icons {
+    background: linear-gradient(180deg, #262840 0%, #1f2035 100%);
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--ps-border-dark);
+    display: flex; align-items: center; justify-content: flex-end;
+    min-height: 28px; flex-shrink: 0;
+}
+.collapse-panels-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--ps-text-medium);
+    font-size: 13px; cursor: pointer;
+    padding: 2px 7px; border-radius: 3px;
+    transition: color 0.15s, border-color 0.15s;
+}
+.collapse-panels-btn:hover { color: var(--ps-text-light); border-color: var(--ps-border-light); }
 
-/* Styling individual panels */
-details.panel > summary { background-color: var(--ps-bg-panel-header); color: var(--ps-text-light); padding: 8px 10px 8px 25px; font-weight: bold; cursor: pointer; list-style: none; position: relative; border-bottom: 1px solid var(--ps-border-dark); }
+/* ── Scrollable content area ── */
+.panel-content {
+    flex-grow: 1; min-height: 0;
+    overflow-y: auto; overflow-x: hidden;
+    display: flex; flex-direction: column;
+    gap: 0; padding: 0;
+    /* Thin blue scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(122,162,247,0.28) transparent;
+}
+.panel-content::-webkit-scrollbar { width: 4px; }
+.panel-content::-webkit-scrollbar-track { background: transparent; }
+.panel-content::-webkit-scrollbar-thumb {
+    background: rgba(122,162,247,0.25); border-radius: 4px;
+}
+.panel-content::-webkit-scrollbar-thumb:hover { background: rgba(122,162,247,0.5); }
+
+.photoshop-ui.panels-collapsed .panel-content { display: none; }
+.photoshop-ui.panels-collapsed .panel-header-icons { justify-content: center; }
+
+/* ── Main panel accordion ── */
+details.panel { border-bottom: 1px solid var(--ps-border-dark); }
+details.panel > summary {
+    background: #1d1e38;
+    color: var(--ps-text-light);
+    padding: 9px 12px 9px 28px;
+    font-weight: 600; font-size: 11px;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    cursor: pointer; list-style: none; position: relative;
+    user-select: none;
+    border-left: 2.5px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+}
+details.panel > summary:hover { background: #252642; border-left-color: rgba(122,162,247,0.45); }
+details.panel[open] > summary { background: #21233d; border-left-color: var(--ps-accent-blue); }
 details.panel > summary::-webkit-details-marker { display: none; }
-details.panel > summary::before { content: '►'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 10px; transition: transform 0.2s; }
-details.panel[open] > summary::before { transform: translateY(-50%) rotate(90deg); }
-details.panel > div { padding: 10px; border-bottom: 1px solid var(--ps-border-dark); }
-.sub-panel { border: 1px solid var(--ps-border-light); border-radius: 3px; margin-bottom: 10px; }
-.sub-panel summary { padding: 5px; font-weight: normal; background-color: var(--ps-bg-panel); font-size: 11px; }
-.sub-panel > * { padding: 8px; }
+/* CSS chevron — rotates ▶ → ▼ */
+details.panel > summary::before {
+    content: '';
+    position: absolute; left: 10px; top: 50%;
+    width: 5px; height: 5px;
+    border-right: 1.5px solid var(--ps-text-medium);
+    border-bottom: 1.5px solid var(--ps-text-medium);
+    transform: translateY(-65%) rotate(-45deg);
+    transition: transform 0.18s ease;
+}
+details.panel[open] > summary::before { transform: translateY(-35%) rotate(45deg); }
+details.panel > div { padding: 10px 12px; }
+
+/* ── Sub-panel cards ── */
+.sub-panel {
+    background: rgba(0,0,0,0.14);
+    border: 1px solid var(--ps-border-dark);
+    border-radius: 5px;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+.sub-panel > summary {
+    padding: 7px 10px 7px 22px;
+    font-weight: 500; font-size: 11px;
+    background: rgba(255,255,255,0.03);
+    color: var(--ps-text-medium);
+    cursor: pointer; list-style: none; position: relative;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background 0.12s, color 0.12s;
+}
+.sub-panel > summary:hover { background: rgba(255,255,255,0.07); color: var(--ps-text-light); }
+.sub-panel[open] > summary { border-bottom-color: var(--ps-border-dark); color: var(--ps-text-light); }
+.sub-panel > summary::-webkit-details-marker { display: none; }
+.sub-panel > summary::before {
+    content: '';
+    position: absolute; left: 8px; top: 50%;
+    width: 4px; height: 4px;
+    border-right: 1.2px solid currentColor;
+    border-bottom: 1.2px solid currentColor;
+    transform: translateY(-65%) rotate(-45deg);
+    transition: transform 0.15s;
+}
+.sub-panel[open] > summary::before { transform: translateY(-35%) rotate(45deg); }
+.sub-panel > div { padding: 10px; }
 .sub-panel button { width: 100%; }
 
 /* --- General Control Styling --- */

@@ -296,15 +296,30 @@
     <!-- Contenedor principal de la aplicación con el nuevo diseño -->
     <div class="photoshop-ui app-container" style="visibility: hidden;">
 
-        <!-- Barra de Opciones Superior mejorada -->
+        <!-- Top Bar — Dulce Theme -->
         <header class="options-bar" role="banner">
             <div class="app-title">
-                <h1>Sprite Sheet Suite <span class="version"> AYARACHI ☠️ v4.5</span></h1>
-                <p id="image-dimensions" aria-live="polite"></p>
+                <!-- 4-color sprite-grid logo -->
+                <div class="app-logo" aria-hidden="true">
+                    <svg viewBox="0 0 20 20" width="18" height="18" fill="none">
+                        <rect x="2"  y="2"  width="7" height="7" rx="1.5" fill="rgba(122,162,247,0.9)"/>
+                        <rect x="11" y="2"  width="7" height="7" rx="1.5" fill="rgba(157,124,216,0.75)"/>
+                        <rect x="2"  y="11" width="7" height="7" rx="1.5" fill="rgba(247,118,142,0.7)"/>
+                        <rect x="11" y="11" width="7" height="7" rx="1.5" fill="rgba(115,218,202,0.7)"/>
+                    </svg>
+                </div>
+                <div class="app-name-group">
+                    <h1>
+                        <span class="app-name-text">Sprite Sheet Suite</span>
+                        <span class="version-badge">v4.5</span>
+                        <span class="codename-tag">✦ Dulce</span>
+                    </h1>
+                    <p id="image-dimensions" aria-live="polite"></p>
+                </div>
             </div>
             <nav class="main-actions" role="navigation" aria-label="Acciones principales">
                 <div class="zoom-controls" role="group" aria-label="Controles de zoom">
-                    <button id="zoom-out-button" aria-label="Alejar (Ctrl + -)">-</button>
+                    <button id="zoom-out-button" aria-label="Alejar (Ctrl + -)">−</button>
                     <span id="zoom-display" aria-live="polite">100%</span>
                     <button id="zoom-in-button" aria-label="Acercar (Ctrl + +)">+</button>
                     <button id="zoom-fit-button" aria-label="Ajustar a pantalla">Fit</button>
@@ -318,8 +333,9 @@
                 </div>
                 <button id="change-image-button" aria-label="Cambiar imagen actual">Cambiar Imagen</button>
                 <button id="fullscreen-button" class="icon-btn" aria-label="Pantalla Completa (M)" aria-pressed="false">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>
                     </svg>
                 </button>
             </nav>

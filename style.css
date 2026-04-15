@@ -43,6 +43,8 @@ body {
     margin: 0;
     overflow: hidden;
     font-size: 12px;
+    height: 100vh;
+    height: 100dvh; /* For browser toolbars */
 }
 h1, h2, h3 { margin: 0 0 10px 0; color: var(--ps-text-light); font-weight: 400; font-size: 1.1em; border-bottom: 1px solid var(--ps-border-light); padding-bottom: 5px;}
 h1 { border: none; padding: 0; font-size: 1.2em; }
@@ -51,16 +53,16 @@ p { margin: 0; }
 .help-text { font-size: 11px; color: var(--ps-text-medium); margin-bottom: 8px; line-height: 1.4; }
 
 /* --- Main Layout --- */
-.photoshop-ui { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+.photoshop-ui { display: flex; flex-direction: column; height: 100%; width: 100%; overflow: hidden; }
 .main-content {
     display: grid;
     grid-template-columns: 48px 1fr 280px;
-    grid-template-rows: 1fr;   /* single row fills the flex-computed height */
-    flex: 1 1 0px;             /* flex-basis:0 makes height 'definite' for 1fr to resolve */
+    grid-template-rows: minmax(0, 1fr);   /* IMPORTANT: minmax(0, 1fr) prevents row blowout */
+    flex: 1 1 0px;             
     overflow: hidden;
     transition: grid-template-columns 0.2s ease-in-out;
-    /* ensure grid items can shrink inside the flex container */
     min-height: 0;
+    height: 100%; /* Force grid height to stay within flex remaining space */
 }
 .photoshop-ui.panels-collapsed .main-content { grid-template-columns: 48px 1fr 30px; }
 
@@ -327,14 +329,11 @@ p { margin: 0; }
 }
 
 
-/* --- Right Panel Stack --- */
-/* ===== Right Panel Stack ===== */
 .right-panel-stack {
     background: var(--ps-bg-panel);
     border-left: 1px solid var(--ps-border-dark);
     display: flex; flex-direction: column;
-    height: 100%; /* Fill the grid cell */
-    max-height: 100%;
+    height: 100%;
     min-height: 0;
     overflow: hidden;
 }

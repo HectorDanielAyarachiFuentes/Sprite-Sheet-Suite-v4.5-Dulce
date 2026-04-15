@@ -464,8 +464,185 @@ select { width: 100%; flex-grow: 1; }
 .styled-list li:hover { background-color: var(--ps-accent-blue); }
 .history-thumb { width: 32px; height: 32px; object-fit: contain; background-color: var(--ps-bg-dark); border-radius: 2px; flex-shrink: 0;}
 
-/* --- Preview & Export Specifics --- */
-#preview-canvas { background-color: var(--ps-bg-dark); border: 1px solid var(--ps-border-dark); margin: 0 auto 10px; display: block; image-rendering: pixelated; }
+/* --- Preview & Animation Controls (Dulce Premium) --- */
+
+/* Panel body */
+.preview-panel-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Canvas wrapper */
+.preview-canvas-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(122,162,247,0.25) 0%, rgba(157,124,216,0.18) 50%, rgba(115,218,202,0.15) 100%);
+}
+.preview-canvas-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(122,162,247,0.08) 0%, rgba(157,124,216,0.06) 100%);
+    pointer-events: none;
+}
+#preview-canvas {
+    display: block;
+    image-rendering: pixelated;
+    border-radius: 6px;
+    background-color: #0c0d1a;
+    background-image:
+        linear-gradient(45deg, #111220 25%, transparent 25%),
+        linear-gradient(-45deg, #111220 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #111220 75%),
+        linear-gradient(-45deg, transparent 75%, #111220 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+    width: 100%;
+    height: auto;
+    max-width: 220px;
+}
+.preview-canvas-glow {
+    position: absolute;
+    inset: -4px;
+    border-radius: 12px;
+    background: radial-gradient(ellipse at 50% 100%, rgba(122,162,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Playback controls bar */
+.playback-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(122,162,247,0.1);
+    border-radius: 10px;
+}
+.playback-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; height: 32px;
+    padding: 0;
+    background: rgba(122,162,247,0.07);
+    border: 1px solid rgba(122,162,247,0.15);
+    border-radius: 8px;
+    color: #7982a9;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s, transform 0.08s;
+    box-shadow: none;
+    flex-shrink: 0;
+}
+.playback-btn svg { width: 15px; height: 15px; }
+.playback-btn:hover:not(:disabled) {
+    background: rgba(122,162,247,0.16);
+    border-color: rgba(122,162,247,0.38);
+    color: #c0caf5;
+    box-shadow: 0 0 10px rgba(122,162,247,0.18);
+}
+.playback-btn:active:not(:disabled) { transform: scale(0.88); }
+.playback-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* Play button — accent glow */
+.playback-btn--play {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, rgba(122,162,247,0.18) 0%, rgba(157,124,216,0.14) 100%);
+    border-color: rgba(122,162,247,0.32);
+    color: #a8beff;
+    box-shadow: 0 0 14px rgba(122,162,247,0.14), inset 0 0 8px rgba(122,162,247,0.04);
+}
+.playback-btn--play svg { width: 18px; height: 18px; }
+.playback-btn--play:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(122,162,247,0.28) 0%, rgba(157,124,216,0.22) 100%);
+    border-color: rgba(122,162,247,0.55);
+    color: #c0d0ff;
+    box-shadow: 0 0 20px rgba(122,162,247,0.28), inset 0 0 10px rgba(122,162,247,0.07);
+}
+
+/* FPS control */
+.fps-control {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.15);
+    border: 1px solid rgba(122,162,247,0.08);
+    border-radius: 8px;
+}
+.fps-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.fps-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #4a5080;
+}
+.fps-badge {
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #7aa2f7;
+    background: rgba(122,162,247,0.1);
+    border: 1px solid rgba(122,162,247,0.2);
+    border-radius: 5px;
+    padding: 1px 7px;
+    min-width: 30px;
+    text-align: center;
+}
+/* Styled range slider for FPS */
+#fps-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgba(122,162,247,0.5) 0%, rgba(157,124,216,0.35) 100%);
+    outline: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+#fps-slider:disabled { opacity: 0.3; cursor: not-allowed; }
+#fps-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7aa2f7 0%, #9d7cd8 100%);
+    border: 2px solid rgba(255,255,255,0.15);
+    box-shadow: 0 0 8px rgba(122,162,247,0.5);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+#fps-slider:not(:disabled)::-webkit-slider-thumb:hover {
+    transform: scale(1.25);
+    box-shadow: 0 0 14px rgba(122,162,247,0.75);
+}
+#fps-slider::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7aa2f7 0%, #9d7cd8 100%);
+    border: 2px solid rgba(255,255,255,0.15);
+    box-shadow: 0 0 8px rgba(122,162,247,0.5);
+    cursor: pointer;
+}
+
+
 #code-preview-container { display: none; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
 .code-editor { background-color: var(--ps-input-bg); border: 1px solid var(--ps-border-dark); border-radius: 3px; overflow: hidden; display: flex; flex-direction: column; }
 .code-editor-header { background-color: var(--ps-bg-panel); padding: 5px 8px; font-size: 11px; color: var(--ps-text-medium); border-bottom: 1px solid var(--ps-border-dark); position: relative;}

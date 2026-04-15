@@ -82,11 +82,11 @@ const AnimationManager = (() => {
         toggleAnimation() {
             AppState.animation.isPlaying = !AppState.animation.isPlaying;
             if (AppState.animation.isPlaying && AppState.getAnimationFrames().length > 0) {
-                DOM.playPauseButton.textContent = '⏸️';
+                DOM.playPauseButton.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><rect x="5" y="4" width="4" height="16" rx="1"/><rect x="15" y="4" width="4" height="16" rx="1"/></svg>`;
                 AppState.animation.lastTime = performance.now();
                 animationLoop(AppState.animation.lastTime);
             } else {
-                DOM.playPauseButton.textContent = '▶️';
+                DOM.playPauseButton.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
                 cancelAnimationFrame(AppState.animation.animationFrameId);
             }
         },

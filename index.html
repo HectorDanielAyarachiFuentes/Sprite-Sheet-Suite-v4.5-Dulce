@@ -590,19 +590,44 @@
 
                     <details class="panel" open>
                         <summary>Previsualización</summary>
-                        <div>
-                            <canvas id="preview-canvas" width="150" height="150"
-                                aria-label="Vista previa de animación"></canvas>
-                            <div class="input-group center" role="group" aria-label="Controles de reproducción">
-                                <button id="first-frame-button" class="icon-btn" disabled
-                                    aria-label="Ir al primer frame" aria-disabled="true">⏮️</button>
-                                <button id="play-pause-button" class="icon-btn" disabled
-                                    aria-label="Reproducir/Pausar animación" aria-disabled="true">▶️</button>
-                                <button id="last-frame-button" class="icon-btn" disabled aria-label="Ir al último frame"
-                                    aria-disabled="true">⏭️</button>
+                        <div class="preview-panel-body">
+                            <!-- Canvas wrapper con marco premium -->
+                            <div class="preview-canvas-wrapper">
+                                <canvas id="preview-canvas" width="150" height="150"
+                                    aria-label="Vista previa de animación"></canvas>
+                                <div class="preview-canvas-glow"></div>
                             </div>
-                            <div class="input-group center">
-                                <label for="fps-slider">FPS: <span id="fps-value" aria-live="polite">12</span></label>
+
+                            <!-- Controles de reproducción -->
+                            <div class="playback-controls" role="group" aria-label="Controles de reproducción">
+                                <button id="first-frame-button" class="playback-btn" disabled
+                                    aria-label="Ir al primer frame" aria-disabled="true" title="Primer frame">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <polygon points="19 20 9 12 19 4 19 20"/>
+                                        <line x1="5" y1="19" x2="5" y2="5"/>
+                                    </svg>
+                                </button>
+                                <button id="play-pause-button" class="playback-btn playback-btn--play" disabled
+                                    aria-label="Reproducir/Pausar animación" aria-disabled="true" title="Reproducir / Pausar">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true">
+                                        <polygon points="5 3 19 12 5 21 5 3"/>
+                                    </svg>
+                                </button>
+                                <button id="last-frame-button" class="playback-btn" disabled
+                                    aria-label="Ir al último frame" aria-disabled="true" title="Último frame">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <polygon points="5 4 15 12 5 20 5 4"/>
+                                        <line x1="19" y1="5" x2="19" y2="19"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Control FPS -->
+                            <div class="fps-control">
+                                <div class="fps-label-row">
+                                    <span class="fps-label">FPS</span>
+                                    <span class="fps-badge" id="fps-value" aria-live="polite">12</span>
+                                </div>
                                 <input type="range" id="fps-slider" min="1" max="60" value="12" disabled
                                     aria-label="Velocidad de reproducción en frames por segundo" aria-disabled="true">
                             </div>

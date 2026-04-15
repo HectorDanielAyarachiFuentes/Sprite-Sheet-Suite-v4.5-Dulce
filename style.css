@@ -59,6 +59,8 @@ p { margin: 0; }
     flex: 1 1 0px;             /* flex-basis:0 makes height 'definite' for 1fr to resolve */
     overflow: hidden;
     transition: grid-template-columns 0.2s ease-in-out;
+    /* ensure grid items can shrink inside the flex container */
+    min-height: 0;
 }
 .photoshop-ui.panels-collapsed .main-content { grid-template-columns: 48px 1fr 30px; }
 
@@ -331,9 +333,10 @@ p { margin: 0; }
     background: var(--ps-bg-panel);
     border-left: 1px solid var(--ps-border-dark);
     display: flex; flex-direction: column;
-    overflow: hidden;
-    height: 100%;   /* explicitly fill the grid cell height */
+    height: 100%; /* Fill the grid cell */
+    max-height: 100%;
     min-height: 0;
+    overflow: hidden;
 }
 .panel-header-icons {
     background: linear-gradient(180deg, #262840 0%, #1f2035 100%);
@@ -354,13 +357,17 @@ p { margin: 0; }
 
 /* ── Scrollable content area ── */
 .panel-content {
-    flex-grow: 1; min-height: 0;
-    overflow-y: auto; overflow-x: hidden;
-    display: flex; flex-direction: column;
-    gap: 0; padding: 0;
+    flex: 1; /* Takes remaining height below header */
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    display: block; /* Use block context so children stack naturally without flex-shrinking */
+    padding: 0;
+    margin: 0;
+    padding-bottom: 20px; /* Extra padding at the bottom for easier scrolling */
     /* Thin blue scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(122,162,247,0.28) transparent;
+    scrollbar-color: rgba(122,162,247,0.45) transparent;
 }
 .panel-content::-webkit-scrollbar { width: 5px; }
 .panel-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.15); border-radius: 4px; }
@@ -373,7 +380,7 @@ p { margin: 0; }
 .photoshop-ui.panels-collapsed .panel-header-icons { justify-content: center; }
 
 /* ── Main panel accordion ── */
-details.panel { border-bottom: 1px solid var(--ps-border-dark); }
+details.panel { border-bottom: 1px solid var(--ps-border-dark); display: block; }
 details.panel > summary {
     background: #1d1e38;
     color: var(--ps-text-light);

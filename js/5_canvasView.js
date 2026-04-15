@@ -182,13 +182,24 @@ const CanvasView = (() => {
         drawRulers() {
             CTX.rulerTop.clearRect(0, 0, DOM.rulerTop.width, DOM.rulerTop.height);
             CTX.rulerLeft.clearRect(0, 0, DOM.rulerLeft.width, DOM.rulerLeft.height);
+
+            // Fondo del panel para que la regla no se vea transparente/negra
+            CTX.rulerTop.fillStyle = '#252743';
+            CTX.rulerTop.fillRect(0, 0, DOM.rulerTop.width, DOM.rulerTop.height);
+            CTX.rulerLeft.fillStyle = '#252743';
+            CTX.rulerLeft.fillRect(0, 0, DOM.rulerLeft.width, DOM.rulerLeft.height);
+
             if (!DOM.imageDisplay.src || !DOM.imageDisplay.complete) return;
 
             const scrollLeft = DOM.editorArea.scrollLeft;
             const scrollTop = DOM.editorArea.scrollTop;
 
+            const rulerTextColor = '#7aa2f7';   // azul acento — visible sobre el fondo oscuro
+            const rulerTickColor = '#4a5080';    // gris-azul para los ticks menores
+
             CTX.rulerTop.font = CTX.rulerLeft.font = '10px var(--font-sans)';
-            CTX.rulerTop.fillStyle = CTX.rulerLeft.fillStyle = 'var(--ps-text-medium)';
+            CTX.rulerTop.fillStyle = CTX.rulerLeft.fillStyle = rulerTextColor;
+            CTX.rulerTop.strokeStyle = CTX.rulerLeft.strokeStyle = rulerTickColor;
 
             let step = 10;
             if (AppState.zoomLevel < 0.5) step = 50;

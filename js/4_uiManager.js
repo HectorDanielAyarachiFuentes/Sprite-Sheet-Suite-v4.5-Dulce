@@ -90,7 +90,7 @@ const UIManager = (() => {
             const framesData = AppState.getFlattenedFrames();
             // --- CORRECCIÓN: Se actualiza la versión en los metadatos ---
             const meta = {
-                app: "Sprite Sheet Suite v4.4",
+                app: "Sprite Sheet Suite v4.5",
                 image: AppState.currentFileName,
                 size: { w: DOM.canvas.width, h: DOM.canvas.height },
                 clips: AppState.clips.map(c => ({ name: c.name, frames: c.frameIds }))

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sprite Sheet Suite v4.4 "Dulce" (Functional Photoshop UI)</title>
+    <title>Sprite Sheet Suite v4.5 "Dulce" (Functional Photoshop UI)</title>
     <!-- Librerías Externas (sin cambios) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
@@ -11,11 +12,13 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- Metadatos mejorados para accesibilidad -->
-    <meta name="description" content="Una suite de herramientas web profesional para cortar, previsualizar y exportar animaciones desde hojas de sprites (sprite sheets).">
+    <meta name="description"
+        content="Una suite de herramientas web profesional para cortar, previsualizar y exportar animaciones desde hojas de sprites (sprite sheets).">
     <meta name="keywords" content="sprite sheet, animación, corte de sprites, herramienta web, desarrollo de juegos">
     <meta name="author" content="Héctor Daniel Ayarachi Fuentes">
     <meta name="robots" content="index, follow">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%231a1b26'/><rect x='2' y='2' width='5' height='5' fill='%2324283b'/><rect x='9' y='2' width='5' height='5' fill='%2324283b'/><rect x='2' y='9' width='5' height='5' fill='%2324283b'/><rect x='9' y='9' width='5' height='5' fill='%237aa2f7'/></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%231a1b26'/><rect x='2' y='2' width='5' height='5' fill='%2324283b'/><rect x='9' y='2' width='5' height='5' fill='%2324283b'/><rect x='2' y='9' width='5' height='5' fill='%2324283b'/><rect x='9' y='9' width='5' height='5' fill='%237aa2f7'/></svg>">
 
     <!-- Preload de recursos críticos -->
     <link rel="preload" href="style.css" as="style">
@@ -24,6 +27,7 @@
     <!-- Tema oscuro por defecto -->
     <meta name="color-scheme" content="dark">
 </head>
+
 <body>
 
     <!-- Skip link para accesibilidad -->
@@ -33,26 +37,194 @@
     <!-- Pantalla de bienvenida mejorada -->
     <div id="welcome-screen" role="dialog" aria-labelledby="welcome-title" aria-describedby="welcome-description">
         <div id="drop-zone" tabindex="0" role="button" aria-label="Zona de carga de archivos">
-            <h2 id="welcome-title">Sprite Sheet Suite v4.4</h2>
-            <p id="welcome-description">Arrastra y suelta tu imagen aquí o selecciónala</p>
-            <label for="image-loader" id="image-loader-label" tabindex="0">Seleccionar Archivo</label>
-            <input type="file" id="image-loader" accept="image/*" aria-label="Seleccionar archivo de imagen">
 
-            <!-- Indicador de carga mejorado -->
-            <div id="file-loading-indicator" class="hidden" aria-live="polite">
-                <div class="loading-spinner"></div>
-                <p>Cargando archivo...</p>
+            <!-- ══ Banner SVG Animado ══ -->
+            <svg class="welcome-svg-banner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 150" aria-hidden="true">
+                <defs>
+                    <filter id="ws-glow" x="-60%" y="-60%" width="220%" height="220%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <filter id="ws-glow-sm" x="-100%" y="-100%" width="300%" height="300%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                    <linearGradient id="ws-spd" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#7aa2f7" stop-opacity="0"/>
+                        <stop offset="100%" stop-color="#7aa2f7" stop-opacity="0.85"/>
+                    </linearGradient>
+                    <radialGradient id="ws-cg" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#1563f0" stop-opacity="0.32"/>
+                        <stop offset="100%" stop-color="#1563f0" stop-opacity="0"/>
+                    </radialGradient>
+                    <linearGradient id="ws-ff" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#0f1827"/>
+                        <stop offset="100%" stop-color="#08101e"/>
+                    </linearGradient>
+                    <linearGradient id="ws-as" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#7aa2f7"/>
+                        <stop offset="50%" stop-color="#c0caf5"/>
+                        <stop offset="100%" stop-color="#7aa2f7"/>
+                    </linearGradient>
+                    <linearGradient id="ws-fl" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#0d0f1a" stop-opacity="1"/>
+                        <stop offset="28%" stop-color="#0d0f1a" stop-opacity="0"/>
+                    </linearGradient>
+                    <linearGradient id="ws-fr" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="72%" stop-color="#0d0f1a" stop-opacity="0"/>
+                        <stop offset="100%" stop-color="#0d0f1a" stop-opacity="1"/>
+                    </linearGradient>
+                    <linearGradient id="ws-fb" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="55%" stop-color="#0d0f1a" stop-opacity="0"/>
+                        <stop offset="100%" stop-color="#0d0f1a" stop-opacity="1"/>
+                    </linearGradient>
+                    <pattern id="ws-dt" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                        <circle cx="10" cy="10" r="0.7" fill="#7aa2f7" opacity="0.13"/>
+                    </pattern>
+                    <clipPath id="ws-cp"><rect width="640" height="150"/></clipPath>
+                </defs>
+
+                <!-- Fondo + puntos -->
+                <rect width="640" height="150" fill="#0d0f1a"/>
+                <rect width="640" height="150" fill="url(#ws-dt)"/>
+                <!-- Halo central -->
+                <ellipse cx="319" cy="75" rx="185" ry="82" fill="url(#ws-cg)"/>
+
+                <!-- Speed lines izquierda -->
+                <g clip-path="url(#ws-cp)">
+                    <rect x="0" y="19" height="1.5" fill="url(#ws-spd)" opacity="0.5"><animate attributeName="width" values="55;215;55" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.3;0.6;0.3" dur="2.4s" repeatCount="indefinite"/></rect>
+                    <rect x="0" y="27" height="1"   fill="url(#ws-spd)" opacity="0.28"><animate attributeName="width" values="35;145;35" dur="1.9s" begin="0.3s" repeatCount="indefinite"/></rect>
+                    <rect x="0" y="47" height="1.5" fill="url(#ws-spd)" opacity="0.45"><animate attributeName="width" values="50;190;50" dur="2.1s" begin="0.5s" repeatCount="indefinite"/></rect>
+                    <rect x="0" y="56" height="1"   fill="url(#ws-spd)" opacity="0.22"><animate attributeName="width" values="28;115;28" dur="1.7s" begin="0.8s" repeatCount="indefinite"/></rect>
+                    <rect x="0" y="77" height="1.5" fill="url(#ws-spd)" opacity="0.4"><animate attributeName="width" values="45;175;45" dur="2.6s" begin="0.2s" repeatCount="indefinite"/></rect>
+                    <rect x="0" y="86" height="1"   fill="url(#ws-spd)" opacity="0.2"><animate attributeName="width" values="28;125;28" dur="2.0s" begin="0.6s" repeatCount="indefinite"/></rect>
+                    <rect x="0" y="107" height="1.5" fill="url(#ws-spd)" opacity="0.35"><animate attributeName="width" values="48;178;48" dur="2.3s" begin="0.4s" repeatCount="indefinite"/></rect>
+                    <rect x="0" y="127" height="1"  fill="url(#ws-spd)" opacity="0.18"><animate attributeName="width" values="22;98;22"  dur="1.8s" begin="0.9s" repeatCount="indefinite"/></rect>
+                </g>
+
+                <!-- Frames de sprites -->
+                <g clip-path="url(#ws-cp)">
+                    <!-- F1 far-left, faded -->
+                    <g opacity="0.28">
+                        <rect x="145" y="55" width="46" height="46" rx="3" fill="url(#ws-ff)" stroke="#1d2948" stroke-width="1"/>
+                        <rect x="158" y="63" width="7" height="7" rx="1" fill="#384f87" opacity="0.7"/>
+                        <rect x="155" y="70" width="14" height="13" rx="1" fill="#384f87" opacity="0.7"/>
+                        <rect x="154" y="83" width="5" height="7" fill="#384f87" opacity="0.7"/>
+                        <rect x="161" y="83" width="5" height="7" fill="#384f87" opacity="0.7"/>
+                    </g>
+                    <!-- F2 left -->
+                    <g opacity="0.58">
+                        <animateTransform attributeName="transform" type="translate" values="4,0;0,0;4,0" dur="2.8s" repeatCount="indefinite" additive="sum"/>
+                        <rect x="200" y="47" width="57" height="57" rx="3" fill="url(#ws-ff)" stroke="#243770" stroke-width="1.5"/>
+                        <rect x="216" y="56" width="11" height="11" rx="1" fill="#4864b4" opacity="0.82"/>
+                        <rect x="213" y="67" width="17" height="17" rx="1" fill="#4864b4" opacity="0.82"/>
+                        <rect x="212" y="84" width="6"  height="10" fill="#4864b4" opacity="0.82"/>
+                        <rect x="220" y="84" width="6"  height="10" fill="#4864b4" opacity="0.82"/>
+                    </g>
+                    <!-- F3 ACTIVE (centro) -->
+                    <g filter="url(#ws-glow)">
+                        <animateTransform attributeName="transform" type="translate" values="0,2;0,-2;0,2" dur="3.6s" repeatCount="indefinite" additive="sum"/>
+                        <!-- Halo exterior -->
+                        <rect x="276" y="30" width="86" height="86" rx="7" fill="none" stroke="#1563f0" stroke-width="0.7" opacity="0.45"/>
+                        <!-- Marco principal -->
+                        <rect x="281" y="35" width="76" height="76" rx="5" fill="url(#ws-ff)" stroke="url(#ws-as)" stroke-width="2"/>
+                        <!-- Handles de esquina -->
+                        <path d="M281,46 L281,35 L292,35" fill="none" stroke="#c0caf5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M346,35 L357,35 L357,46" fill="none" stroke="#c0caf5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M357,100 L357,111 L346,111" fill="none" stroke="#c0caf5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M281,100 L281,111 L292,111" fill="none" stroke="#c0caf5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <!-- Pixel art corriendo (azul brillante) -->
+                        <g fill="#7aa2f7">
+                            <rect x="309" y="44" width="13" height="13" rx="1"/>
+                            <rect x="305" y="57" width="21" height="21" rx="1"/>
+                            <rect x="302" y="78" width="9"  height="14" rx="1"/>
+                            <rect x="314" y="78" width="9"  height="14" rx="1"/>
+                        </g>
+                        <!-- Inner glow -->
+                        <rect x="281" y="35" width="76" height="76" rx="5" fill="url(#ws-cg)" opacity="0.35"/>
+                    </g>
+                    <!-- Pulse dot bajo el frame activo -->
+                    <circle cx="319" cy="121" r="3.5" fill="#7aa2f7" filter="url(#ws-glow-sm)">
+                        <animate attributeName="r" values="2.5;5.5;2.5" dur="2s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.9;0.25;0.9" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <!-- F4 right -->
+                    <g opacity="0.58">
+                        <animateTransform attributeName="transform" type="translate" values="-4,0;0,0;-4,0" dur="2.8s" begin="0.5s" repeatCount="indefinite" additive="sum"/>
+                        <rect x="381" y="47" width="57" height="57" rx="3" fill="url(#ws-ff)" stroke="#243770" stroke-width="1.5"/>
+                        <rect x="397" y="56" width="11" height="11" rx="1" fill="#4864b4" opacity="0.82"/>
+                        <rect x="394" y="67" width="17" height="17" rx="1" fill="#4864b4" opacity="0.82"/>
+                        <rect x="393" y="84" width="6"  height="10" fill="#4864b4" opacity="0.82"/>
+                        <rect x="401" y="84" width="6"  height="10" fill="#4864b4" opacity="0.82"/>
+                    </g>
+                    <!-- F5 far-right, faded -->
+                    <g opacity="0.28">
+                        <rect x="449" y="55" width="46" height="46" rx="3" fill="url(#ws-ff)" stroke="#1d2948" stroke-width="1"/>
+                        <rect x="462" y="63" width="7" height="7" rx="1" fill="#384f87" opacity="0.7"/>
+                        <rect x="459" y="70" width="14" height="13" rx="1" fill="#384f87" opacity="0.7"/>
+                        <rect x="458" y="83" width="5" height="7" fill="#384f87" opacity="0.7"/>
+                        <rect x="465" y="83" width="5" height="7" fill="#384f87" opacity="0.7"/>
+                    </g>
+                </g>
+
+                <!-- Destellos / sparkles -->
+                <g>
+                    <g><animate attributeName="opacity" values="0;1;0" dur="2.6s" begin="0.2s" repeatCount="indefinite"/>
+                        <path d="M90,24 L92,17 L94,24 L101,26 L94,28 L92,35 L90,28 L83,26 Z" fill="#7aa2f7"/></g>
+                    <g><animate attributeName="opacity" values="0;1;0" dur="3.3s" begin="1.1s" repeatCount="indefinite"/>
+                        <path d="M558,30 L560,23 L562,30 L569,32 L562,34 L560,41 L558,34 L551,32 Z" fill="#c0caf5" opacity="0.82"/></g>
+                    <g><animate attributeName="opacity" values="0;0.9;0" dur="2.9s" begin="0.7s" repeatCount="indefinite"/>
+                        <path d="M548,113 L550,107 L552,113 L558,115 L552,117 L550,123 L548,117 L542,115 Z" fill="#7aa2f7" opacity="0.7"/></g>
+                    <circle cx="133" cy="110" r="2.2" fill="#7aa2f7">
+                        <animate attributeName="opacity" values="0.2;0.75;0.2" dur="3.1s" repeatCount="indefinite"/></circle>
+                    <circle cx="508" cy="27"  r="1.6" fill="#c0caf5">
+                        <animate attributeName="opacity" values="0.1;0.65;0.1" dur="2.4s" begin="1.4s" repeatCount="indefinite"/></circle>
+                </g>
+
+                <!-- Overlays de fade -->
+                <rect width="640" height="150" fill="url(#ws-fl)"/>
+                <rect width="640" height="150" fill="url(#ws-fr)"/>
+                <rect width="640" height="150" fill="url(#ws-fb)"/>
+            </svg>
+
+            <!-- ══ Contenido ══ -->
+            <div class="welcome-content">
+                <h2 id="welcome-title">Sprite Sheet Suite v4.5</h2>
+                <span class="welcome-version-name">"Dulce" Edition</span>
+
+                <div class="welcome-features" role="list" aria-label="Características principales">
+                    <span class="welcome-badge" role="listitem">✂️ Multi-Clip Animations</span>
+                    <span class="welcome-badge" role="listitem">▶️ Preview en Vivo</span>
+                    <span class="welcome-badge" role="listitem">🔍 Auto-Detect</span>
+                    <span class="welcome-badge" role="listitem">📤 GIF · JSON · ZIP</span>
+                </div>
+
+                <p id="welcome-description" class="welcome-drop-text">
+                    Arrastra y suelta tu <strong>sprite sheet</strong> aquí,<br>o selecciona un archivo para comenzar
+                </p>
+
+                <label for="image-loader" id="image-loader-label" tabindex="0">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" style="width:15px;height:15px;fill:currentColor;flex-shrink:0"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.53 15.93.43 13.35.43c-1.3 0-2.52.5-3.43 1.4L9 2.73l-.92-.9C7.17.93 5.96.43 4.65.43 2.07.43 0 2.53 0 4.65c0 .47.1.91.18 1.35H0v2h20V6zm0 2H0v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8zm-8 6l-4 4h3v4h2v-4h3l-4-4z"/></svg>
+                    Seleccionar Archivo
+                </label>
+                <input type="file" id="image-loader" accept="image/*" aria-label="Seleccionar archivo de imagen">
+
+                <div id="file-loading-indicator" class="hidden" aria-live="polite">
+                    <div class="loading-spinner"></div>
+                    <p>Cargando archivo…</p>
+                </div>
             </div>
+
         </div>
     </div>
-    
+
     <!-- Contenedor principal de la aplicación con el nuevo diseño -->
     <div class="photoshop-ui app-container" style="visibility: hidden;">
-        
+
         <!-- Barra de Opciones Superior mejorada -->
         <header class="options-bar" role="banner">
             <div class="app-title">
-                <h1>Sprite Sheet Suite <span class="version"> AYARACHI ☠️ v4.4</span></h1>
+                <h1>Sprite Sheet Suite <span class="version"> AYARACHI ☠️ v4.5</span></h1>
                 <p id="image-dimensions" aria-live="polite"></p>
             </div>
             <nav class="main-actions" role="navigation" aria-label="Acciones principales">
@@ -65,12 +237,15 @@
                 <div class="snap-controls" role="group" aria-label="Controles de ajuste a la cuadrícula">
                     <input type="checkbox" id="snap-to-grid-checkbox" title="Ajustar a la cuadrícula (G)">
                     <label for="snap-to-grid-checkbox">Ajustar</label>
-                    <input type="number" id="grid-size-input" value="16" min="1" title="Tamaño de la cuadrícula en píxeles">
+                    <input type="number" id="grid-size-input" value="16" min="1"
+                        title="Tamaño de la cuadrícula en píxeles">
                     <label for="grid-size-input">px</label>
                 </div>
                 <button id="change-image-button" aria-label="Cambiar imagen actual">Cambiar Imagen</button>
                 <button id="fullscreen-button" class="icon-btn" aria-label="Pantalla Completa (M)" aria-pressed="false">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                    </svg>
                 </button>
             </nav>
         </header>
@@ -80,55 +255,110 @@
 
             <!-- Barra de Herramientas Izquierda mejorada -->
             <aside class="left-toolbar" role="toolbar" aria-label="Herramientas de edición">
-                <button id="undo-button" class="tool-btn" disabled aria-label="Deshacer última acción (Ctrl+Z)" aria-disabled="true" title="Deshacer (Ctrl+Z)">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.38 11.23 17.29 8 12.5 8z"/></svg>
+                <button id="undo-button" class="tool-btn" disabled aria-label="Deshacer última acción (Ctrl+Z)"
+                    aria-disabled="true" title="Deshacer (Ctrl+Z)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.38 11.23 17.29 8 12.5 8z" />
+                    </svg>
                 </button>
-                <button id="redo-button" class="tool-btn" disabled aria-label="Rehacer última acción (Ctrl+Y)" aria-disabled="true" title="Rehacer (Ctrl+Y)">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.79 0-8.88 3.23-10.13 7.5l-2.37-.78C.62 10.23 4.71 6 9.5 6c1.98 0 3.86.63 5.38 1.75L18 4v9h-9l3.4-3.4z"/></svg>
+                <button id="redo-button" class="tool-btn" disabled aria-label="Rehacer última acción (Ctrl+Y)"
+                    aria-disabled="true" title="Rehacer (Ctrl+Y)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M18.4 10.6C16.55 8.99 14.15 8 11.5 8c-4.79 0-8.88 3.23-10.13 7.5l-2.37-.78C.62 10.23 4.71 6 9.5 6c1.98 0 3.86.63 5.38 1.75L18 4v9h-9l3.4-3.4z" />
+                    </svg>
                 </button>
                 <div class="separator" role="separator"></div>
-                <button id="select-tool-button" class="tool-btn active" aria-label="Seleccionar/Mover (V)" aria-pressed="true" title="Seleccionar/Mover (V)">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.64,21.97C13.14,22.21 12.54,22 12.31,21.5L10.13,16.76L7.62,18.78C7.45,18.92 7.24,19 7,19A1,1 0 0,1 6,18V3A1,1 0 0,1 7,2C7.24,2 7.45,2.08 7.62,2.22L16.22,8.43L19.5,7.5A1,1 0 0,1 20.5,8.5L13.64,21.97Z"/></svg>
+                <button id="select-tool-button" class="tool-btn active" aria-label="Seleccionar/Mover (V)"
+                    aria-pressed="true" title="Seleccionar/Mover (V)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M13.64,21.97C13.14,22.21 12.54,22 12.31,21.5L10.13,16.76L7.62,18.78C7.45,18.92 7.24,19 7,19A1,1 0 0,1 6,18V3A1,1 0 0,1 7,2C7.24,2 7.45,2.08 7.62,2.22L16.22,8.43L19.5,7.5A1,1 0 0,1 20.5,8.5L13.64,21.97Z" />
+                    </svg>
                 </button>
-                <button id="create-frame-tool-button" class="tool-btn" aria-label="Crear Frame (C)" aria-pressed="false" title="Crear Frame (C)">
-                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3H3v2h2V3m0 4H3v2h2V7m0 4H3v2h2v-2m0 4H3v2h2v-2m4-12H7v2h2V3m0 16H7v2h2v-2m4-16h-2v2h2V3m0 16h-2v2h2v-2m4-16h-2v2h2V3m0 4h-2v2h2V7m0 8h-2v2h2v-2m0-4h-2v2h2v-2m4 8h-2v2h2v-2m0-12h-2v2h2V3m2 4h2V5h-2V7m0 4h2V9h-2v2m0 4h2v-2h-2v2m0 4h2v-2h-2v2Z"/></svg>
+                <button id="create-frame-tool-button" class="tool-btn" aria-label="Crear Frame (C)" aria-pressed="false"
+                    title="Crear Frame (C)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M5 3H3v2h2V3m0 4H3v2h2V7m0 4H3v2h2v-2m0 4H3v2h2v-2m4-12H7v2h2V3m0 16H7v2h2v-2m4-16h-2v2h2V3m0 16h-2v2h2v-2m4-16h-2v2h2V3m0 4h-2v2h2V7m0 8h-2v2h2v-2m0-4h-2v2h2v-2m4 8h-2v2h2v-2m0-12h-2v2h2V3m2 4h2V5h-2V7m0 4h2V9h-2v2m0 4h2v-2h-2v2m0 4h2v-2h-2v2Z" />
+                    </svg>
                 </button>
 
                 <!-- ===== CAMBIO 1: BOTÓN DE BORRADOR DESCOMENTADO ===== -->
-                <button id="eraser-tool-button" class="tool-btn" aria-label="Borrador de Frames (E)" aria-pressed="false" title="Borrador de Frames (E)">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.24,3.56L20.44,7.76L7.76,20.44L3.56,16.24L16.24,3.56M22,2L18,6L6,18L2,22L2.76,19.24L13.76,8.24L11,5.5L12.5,4C13.09,3.41 14.04,3.41 14.62,4L16,5.38L18.62,2.76C19.21,2.18 20.16,2.18 20.74,2.76L21.24,3.26C21.82,3.84 21.82,4.79 21.24,5.38L18.5,8L16,10.5L19.24,13.76L22,11V6C22,4.9 21.58,3.95 20.88,3.24L20.74,3.12C20.16,2.54 19.21,2.54 18.62,3.12L17,4.74L16.74,5L15,3.26L15.38,3C15.96,2.41 16.91,2.41 17.5,3L18.62,4.12L19.88,2.88C20.46,2.29 20.46,1.34 19.88,0.76L19.24,0.12C18.66,-0.46 17.71,-0.46 17.12,0.12L14.5,2.74L14,2.24C13.41,1.66 12.46,1.66 11.88,2.24L10.5,3.62L8.24,1.36L11,1.24V2H22V2Z" /></svg>
+                <button id="eraser-tool-button" class="tool-btn" aria-label="Borrador de Frames (E)"
+                    aria-pressed="false" title="Borrador de Frames (E)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M16.24,3.56L20.44,7.76L7.76,20.44L3.56,16.24L16.24,3.56M22,2L18,6L6,18L2,22L2.76,19.24L13.76,8.24L11,5.5L12.5,4C13.09,3.41 14.04,3.41 14.62,4L16,5.38L18.62,2.76C19.21,2.18 20.16,2.18 20.74,2.76L21.24,3.26C21.82,3.84 21.82,4.79 21.24,5.38L18.5,8L16,10.5L19.24,13.76L22,11V6C22,4.9 21.58,3.95 20.88,3.24L20.74,3.12C20.16,2.54 19.21,2.54 18.62,3.12L17,4.74L16.74,5L15,3.26L15.38,3C15.96,2.41 16.91,2.41 17.5,3L18.62,4.12L19.88,2.88C20.46,2.29 20.46,1.34 19.88,0.76L19.24,0.12C18.66,-0.46 17.71,-0.46 17.12,0.12L14.5,2.74L14,2.24C13.41,1.66 12.46,1.66 11.88,2.24L10.5,3.62L8.24,1.36L11,1.24V2H22V2Z" />
+                    </svg>
                 </button>
 
-                <button id="auto-detect-tool-button" class="tool-btn" aria-label="Detección Automática de Sprites" aria-pressed="false" title="Detección Automática de Sprites">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5,2C15.3,2 16,2.7 16,3.5V6.41L18.59,4L20,5.41L17.41,8H20.5C21.3,8 22,8.7 22,9.5C22,10.05 21.7,10.5 21.25,10.75L18.5,12L21.25,13.25C21.7,13.5 22,13.95 22,14.5C22,15.3 21.3,16 20.5,16H17.41L20,18.59L18.59,20L16,17.41V20.5C16,21.3 15.3,22 14.5,22C13.95,22 13.5,21.7 13.25,21.25L12,18.5L10.75,21.25C10.5,21.7 10.05,22 9.5,22C8.7,22 8,21.3 8,20.5V17.41L5.41,20L4,18.59L6.59,16H3.5C2.7,16 2,15.3 2,14.5C2,13.95 2.3,13.5 2.75,13.25L5.5,12L2.75,10.75C2.3,10.5 2,10.05 2,9.5C2,8.7 2.7,8 3.5,8H6.59L4,5.41L5.41,4L8,6.59V3.5C8,2.7 8.7,2 9.5,2C10.05,2 10.5,2.3 10.75,2.75L12,5.5L13.25,2.75C13.5,2.3 13.95,2 14.5,2Z" /></svg>
+                <button id="auto-detect-tool-button" class="tool-btn" aria-label="Detección Automática de Sprites"
+                    aria-pressed="false" title="Detección Automática de Sprites">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M14.5,2C15.3,2 16,2.7 16,3.5V6.41L18.59,4L20,5.41L17.41,8H20.5C21.3,8 22,8.7 22,9.5C22,10.05 21.7,10.5 21.25,10.75L18.5,12L21.25,13.25C21.7,13.5 22,13.95 22,14.5C22,15.3 21.3,16 20.5,16H17.41L20,18.59L18.59,20L16,17.41V20.5C16,21.3 15.3,22 14.5,22C13.95,22 13.5,21.7 13.25,21.25L12,18.5L10.75,21.25C10.5,21.7 10.05,22 9.5,22C8.7,22 8,21.3 8,20.5V17.41L5.41,20L4,18.59L6.59,16H3.5C2.7,16 2,15.3 2,14.5C2,13.95 2.3,13.5 2.75,13.25L5.5,12L2.75,10.75C2.3,10.5 2,10.05 2,9.5C2,8.7 2.7,8 3.5,8H6.59L4,5.41L5.41,4L8,6.59V3.5C8,2.7 8.7,2 9.5,2C10.05,2 10.5,2.3 10.75,2.75L12,5.5L13.25,2.75C13.5,2.3 13.95,2 14.5,2Z" />
+                    </svg>
                 </button>
-                <button id="remove-bg-tool-button" class="tool-btn" aria-label="Eliminar Fondo (B)" title="Eliminar Fondo (B)">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.5,2C5.5,2 5.5,3 5.5,3C5.5,3 7,4.5 7,6.5C7,8.5 5.5,10 5.5,10C5.5,10 5.5,11 9.5,11C13.5,11 13.5,10 13.5,10C13.5,10 12,8.5 12,6.5C12,4.5 13.5,3 13.5,3C13.5,3 13.5,2 9.5,2M3,12L3.5,11L4,12L3.5,13L3,12M16,12L15.5,11L15,12L15.5,13L16,12M9.5,13C5.5,13 5.5,14 5.5,14C5.5,14 7,15.5 7,17.5C7,19.5 5.5,21 5.5,21C5.5,21 5.5,22 9.5,22C13.5,22 13.5,21 13.5,21C13.5,21 12,19.5 12,17.5C12,15.5 13.5,14 13.5,14C13.5,14 13.5,13 9.5,13M19,2L20,4.5L22,5L20,5.5L19,8L18,5.5L16,5L18,4.5L19,2Z"/></svg>
+                <button id="remove-bg-tool-button" class="tool-btn" aria-label="Eliminar Fondo (B)"
+                    title="Eliminar Fondo (B)">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor"
+                            d="M9.5,2C5.5,2 5.5,3 5.5,3C5.5,3 7,4.5 7,6.5C7,8.5 5.5,10 5.5,10C5.5,10 5.5,11 9.5,11C13.5,11 13.5,10 13.5,10C13.5,10 12,8.5 12,6.5C12,4.5 13.5,3 13.5,3C13.5,3 13.5,2 9.5,2M3,12L3.5,11L4,12L3.5,13L3,12M16,12L15.5,11L15,12L15.5,13L16,12M9.5,13C5.5,13 5.5,14 5.5,14C5.5,14 7,15.5 7,17.5C7,19.5 5.5,21 5.5,21C5.5,21 5.5,22 9.5,22C13.5,22 13.5,21 13.5,21C13.5,21 12,19.5 12,17.5C12,15.5 13.5,14 13.5,14C13.5,14 13.5,13 9.5,13M19,2L20,4.5L22,5L20,5.5L19,8L18,5.5L16,5L18,4.5L19,2Z" />
+                    </svg>
                 </button>
-                <button id="trim-spritesheet-button" class="tool-btn warning-btn" aria-label="Recortar a Contenido" title="¡ACCIÓN DESTRUCTIVA! Recorta la hoja de sprites para ajustarla a los frames definidos. La imagen actual será reemplazada.">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17,15.7V14H19V17C19,18.1 18.1,19 17,19H14V17H15.7C16.4,17 17,16.4 17,15.7M7,7H9V5H7C5.9,5 5,5.9 5,7V9H7V7M17,7V9H19V7C19,5.9 18.1,5 17,5H15V7H17M7,17H5V15H7V17M21,3H3C1.9,3 1,3.9 1,5V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V5C23,3.9 22.1,3 21,3M21,19H3V5H21V19Z" /></svg>
+                <button id="trim-spritesheet-button" class="tool-btn warning-btn" aria-label="Recortar a Contenido"
+                    title="¡ACCIÓN DESTRUCTIVA! Recorta la hoja de sprites para ajustarla a los frames definidos. La imagen actual será reemplazada.">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor"
+                            d="M17,15.7V14H19V17C19,18.1 18.1,19 17,19H14V17H15.7C16.4,17 17,16.4 17,15.7M7,7H9V5H7C5.9,5 5,5.9 5,7V9H7V7M17,7V9H19V7C19,5.9 18.1,5 17,5H15V7H17M7,17H5V15H7V17M21,3H3C1.9,3 1,3.9 1,5V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V5C23,3.9 22.1,3 21,3M21,19H3V5H21V19Z" />
+                    </svg>
                 </button>
-                <button id="frame-inspector-tool-button" class="tool-btn" aria-label="Inspector de Frames" title="Inspector de Frames">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3,3H9V9H3V3M15,3H21V9H15V3M3,15H9V21H3V15M15,15H21V21H15V15M11,3H13V5H11V3M11,7H13V9H11V7M11,11H13V13H11V11M11,15H13V17H11V15M11,19H13V21H11V19M3,11H5V13H3V11M7,11H9V13H7V11M15,11H17V13H15V11M19,11H21V13H19V11Z"/></svg>
+                <button id="frame-inspector-tool-button" class="tool-btn" aria-label="Inspector de Frames"
+                    title="Inspector de Frames">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor"
+                            d="M3,3H9V9H3V3M15,3H21V9H15V3M3,15H9V21H3V15M15,15H21V21H15V15M11,3H13V5H11V3M11,7H13V9H11V7M11,11H13V13H11V11M11,15H13V17H11V15M11,19H13V21H11V19M3,11H5V13H3V11M7,11H9V13H7V11M15,11H17V13H15V11M19,11H21V13H19V11Z" />
+                    </svg>
                 </button>
                 <div class="separator" role="separator"></div>
-                <button id="lock-frames-button" class="tool-btn" aria-label="Bloquear/Desbloquear Frame (L)" aria-pressed="false" title="Bloquear/Desbloquear Frame (L)">🔓</button>
-                <button id="clear-button" class="tool-btn" disabled aria-label="Limpiar Todo" aria-disabled="true" title="Limpiar Todo">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 16h4v2h-4v-2zm0-8h7v2h-7V8zm0 4h6v2h-6v-2zM3 18c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8H3v10zM14 5h-3l-1-1H6L5 5H2v2h12V5z"/></svg>
+                <button id="lock-frames-button" class="tool-btn" aria-label="Bloquear/Desbloquear Frame (L)"
+                    aria-pressed="false" title="Bloquear/Desbloquear Frame (L)">🔓</button>
+                <button id="clear-button" class="tool-btn" disabled aria-label="Limpiar Todo" aria-disabled="true"
+                    title="Limpiar Todo">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M15 16h4v2h-4v-2zm0-8h7v2h-7V8zm0 4h6v2h-6v-2zM3 18c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V8H3v10zM14 5h-3l-1-1H6L5 5H2v2h12V5z" />
+                    </svg>
                 </button>
                 <div class="separator" role="separator"></div>
                 <button id="help-button" class="tool-btn" aria-label="Ayuda y Tutorial" title="Ayuda y Tutorial">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-6h2v6zm0-8h-2V7h2v4z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-6h2v6zm0-8h-2V7h2v4z" />
+                    </svg>
                 </button>
             </aside>
 
             <!-- ===== NUEVO: POPUP DE OPCIONES PARA HERRAMIENTAS ===== -->
             <div id="remove-bg-popup" class="tool-popup hidden">
                 <h4>Eliminar Fondo</h4>
-                <div class="input-group"><label for="remove-bg-tolerance">Tolerancia:</label><input type="number" id="remove-bg-tolerance" value="20" min="0" max="255" title="Qué tan diferente debe ser un color del fondo para ser considerado parte de un sprite (0 = solo colores exactos)."></div>
-                <div class="input-group"><label for="remove-bg-smooth-intensity">Suavizado:</label><select id="remove-bg-smooth-intensity" title="Intensidad del suavizado de bordes"><option value="none">Ninguno</option><option value="low">Bajo</option><option value="medium" selected>Medio</option><option value="high">Alto</option></select></div>
+                <div class="input-group"><label for="remove-bg-tolerance">Tolerancia:</label><input type="number"
+                        id="remove-bg-tolerance" value="20" min="0" max="255"
+                        title="Qué tan diferente debe ser un color del fondo para ser considerado parte de un sprite (0 = solo colores exactos).">
+                </div>
+                <div class="input-group"><label for="remove-bg-smooth-intensity">Suavizado:</label><select
+                        id="remove-bg-smooth-intensity" title="Intensidad del suavizado de bordes">
+                        <option value="none">Ninguno</option>
+                        <option value="low">Bajo</option>
+                        <option value="medium" selected>Medio</option>
+                        <option value="high">Alto</option>
+                    </select></div>
                 <div class="help-text-popup">
-                    <b>Tolerancia:</b> Un valor de <b>0</b> solo borra píxeles idénticos al fondo. Un valor más <b>alto</b> (ej. 20) borra colores similares, útil para imágenes con bordes suavizados (anti-aliasing) o compresión JPG.<br><br>
+                    <b>Tolerancia:</b> Un valor de <b>0</b> solo borra píxeles idénticos al fondo. Un valor más
+                    <b>alto</b> (ej. 20) borra colores similares, útil para imágenes con bordes suavizados
+                    (anti-aliasing) o compresión JPG.<br><br>
                     <b>Suavizado de Bordes:</b>
                     <ul>
                         <li><b>Bajo:</b> Un retoque sutil para bordes ya definidos.</li>
@@ -164,22 +394,27 @@
             <aside class="right-panel-stack">
                 <!-- ... resto del panel derecho sin cambios ... -->
                 <div class="panel-header-icons">
-                     <button class="collapse-panels-btn" title="Contraer paneles">»</button>
+                    <button class="collapse-panels-btn" title="Contraer paneles">»</button>
                 </div>
                 <div class="panel-content">
-                    
+
                     <details class="panel" open>
                         <summary>Previsualización</summary>
                         <div>
-                            <canvas id="preview-canvas" width="150" height="150" aria-label="Vista previa de animación"></canvas>
+                            <canvas id="preview-canvas" width="150" height="150"
+                                aria-label="Vista previa de animación"></canvas>
                             <div class="input-group center" role="group" aria-label="Controles de reproducción">
-                                <button id="first-frame-button" class="icon-btn" disabled aria-label="Ir al primer frame" aria-disabled="true">⏮️</button>
-                                <button id="play-pause-button" class="icon-btn" disabled aria-label="Reproducir/Pausar animación" aria-disabled="true">▶️</button>
-                                <button id="last-frame-button" class="icon-btn" disabled aria-label="Ir al último frame" aria-disabled="true">⏭️</button>
+                                <button id="first-frame-button" class="icon-btn" disabled
+                                    aria-label="Ir al primer frame" aria-disabled="true">⏮️</button>
+                                <button id="play-pause-button" class="icon-btn" disabled
+                                    aria-label="Reproducir/Pausar animación" aria-disabled="true">▶️</button>
+                                <button id="last-frame-button" class="icon-btn" disabled aria-label="Ir al último frame"
+                                    aria-disabled="true">⏭️</button>
                             </div>
                             <div class="input-group center">
                                 <label for="fps-slider">FPS: <span id="fps-value" aria-live="polite">12</span></label>
-                                <input type="range" id="fps-slider" min="1" max="60" value="12" disabled aria-label="Velocidad de reproducción en frames por segundo" aria-disabled="true">
+                                <input type="range" id="fps-slider" min="1" max="60" value="12" disabled
+                                    aria-label="Velocidad de reproducción en frames por segundo" aria-disabled="true">
                             </div>
                         </div>
                     </details>
@@ -190,16 +425,31 @@
                             <h3>Clips de Animación</h3>
                             <div class="input-group" role="group" aria-label="Gestión de clips">
                                 <select id="clips-select" aria-label="Seleccionar clip de animación"></select>
-                                <button id="new-clip-button" class="icon-btn" aria-label="Crear nuevo clip" title="Nuevo Clip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></button>
-                                <button id="rename-clip-button" class="icon-btn" aria-label="Renombrar clip seleccionado" title="Renombrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-                                <button id="delete-clip-button" class="icon-btn" aria-label="Eliminar clip seleccionado" title="Eliminar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+                                <button id="new-clip-button" class="icon-btn" aria-label="Crear nuevo clip"
+                                    title="Nuevo Clip"><svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                                    </svg></button>
+                                <button id="rename-clip-button" class="icon-btn"
+                                    aria-label="Renombrar clip seleccionado" title="Renombrar"><svg viewBox="0 0 24 24"
+                                        aria-hidden="true">
+                                        <path
+                                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                                    </svg></button>
+                                <button id="delete-clip-button" class="icon-btn" aria-label="Eliminar clip seleccionado"
+                                    title="Eliminar"><svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path
+                                            d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                                    </svg></button>
                             </div>
                             <h3>Frames del Clip</h3>
                             <div class="input-group" role="group" aria-label="Selección de frames">
-                                <button id="select-all-frames" class="small-action" aria-label="Seleccionar todos los frames">Seleccionar Todos</button>
-                                <button id="deselect-all-frames" class="small-action" aria-label="Deseleccionar todos los frames">Deseleccionar Todos</button>
+                                <button id="select-all-frames" class="small-action"
+                                    aria-label="Seleccionar todos los frames">Seleccionar Todos</button>
+                                <button id="deselect-all-frames" class="small-action"
+                                    aria-label="Deseleccionar todos los frames">Deseleccionar Todos</button>
                             </div>
-                            <ul id="frames-list" class="styled-list" role="list" aria-label="Lista de frames del clip"></ul>
+                            <ul id="frames-list" class="styled-list" role="list" aria-label="Lista de frames del clip">
+                            </ul>
                         </div>
                     </details>
 
@@ -224,23 +474,30 @@
                             <details class="sub-panel">
                                 <summary>Generación de Parrilla</summary>
                                 <p class="help-text">Borrará los frames existentes.</p>
-                                <div class="input-group"><label>Filas:</label><input type="number" id="rows-input" value="2" min="1"><label>Cols:</label><input type="number" id="cols-input" value="5" min="1"></div>
+                                <div class="input-group"><label>Filas:</label><input type="number" id="rows-input"
+                                        value="2" min="1"><label>Cols:</label><input type="number" id="cols-input"
+                                        value="5" min="1"></div>
                                 <button id="generate-grid-button" disabled>Generar por Parrilla</button>
-                                <div class="input-group"><label>Ancho:</label><input type="number" id="cell-w-input" value="64" min="1"><label>Alto:</label><input type="number" id="cell-h-input" value="64" min="1"></div>
+                                <div class="input-group"><label>Ancho:</label><input type="number" id="cell-w-input"
+                                        value="64" min="1"><label>Alto:</label><input type="number" id="cell-h-input"
+                                        value="64" min="1"></div>
                                 <button id="generate-by-size-button" disabled>Generar por Tamaño</button>
-                                <button id="guess-grid-button" disabled style="margin-top: 8px;">Adivinar Tamaño (Auto)</button>
+                                <button id="guess-grid-button" disabled style="margin-top: 8px;">Adivinar Tamaño
+                                    (Auto)</button>
                             </details>
 
                             <details class="sub-panel">
                                 <summary>Detección Automática</summary>
-                                <p class="help-text">Intenta encontrar los sprites basándose en el color de fondo. Borrará los frames existentes.</p>
+                                <p class="help-text">Intenta encontrar los sprites basándose en el color de fondo.
+                                    Borrará los frames existentes.</p>
                                 <div class="input-group">
                                     <label for="auto-detect-tolerance">Tolerancia:</label>
-                                    <input type="number" id="auto-detect-tolerance" value="20" min="0" max="255" title="Qué tan diferente debe ser un color del fondo para ser considerado parte de un sprite (0 = solo colores exactos).">
+                                    <input type="number" id="auto-detect-tolerance" value="20" min="0" max="255"
+                                        title="Qué tan diferente debe ser un color del fondo para ser considerado parte de un sprite (0 = solo colores exactos).">
                                 </div>
                                 <button id="auto-detect-button" disabled>Detectar Sprites (Auto)</button>
                             </details>
-                            
+
                             <details class="sub-panel">
                                 <summary>Edición Manual de Frames</summary>
                                 <p class="help-text">
@@ -251,7 +508,7 @@
                                     - <b>Añadir/Quitar del Clip:</b> Doble clic en un sub-frame.
                                 </p>
                             </details>
-                             <details class="sub-panel">
+                            <details class="sub-panel">
                                 <summary>Divisiones Internas (Slicing)</summary>
                                 <p class="help-text">
                                     Un frame se convierte en "Grupo" para poder dividirlo.<br>
@@ -266,7 +523,9 @@
 
                     <details class="panel">
                         <summary>Historial de Proyectos</summary>
-                        <div><ul id="project-history-list" class="styled-list"></ul></div>
+                        <div>
+                            <ul id="project-history-list" class="styled-list"></ul>
+                        </div>
                     </details>
 
                     <details class="panel" id="export-panel">
@@ -286,11 +545,14 @@
                                 </div>
                                 <div class="input-group">
                                     <input type="checkbox" id="gif-aspect-ratio-lock" checked>
-                                    <label for="gif-aspect-ratio-lock" title="Bloquea la relación de aspecto al cambiar el tamaño.">Mantener proporción</label>
+                                    <label for="gif-aspect-ratio-lock"
+                                        title="Bloquea la relación de aspecto al cambiar el tamaño.">Mantener
+                                        proporción</label>
                                 </div>
                                 <div class="input-group">
                                     <label for="gif-transparent-bg">Fondo transparente</label>
-                                    <input type="checkbox" id="gif-transparent-bg" checked title="Si se desmarca, puede elegir un color de fondo.">
+                                    <input type="checkbox" id="gif-transparent-bg" checked
+                                        title="Si se desmarca, puede elegir un color de fondo.">
                                 </div>
                                 <div class="input-group" id="gif-bg-color-group">
                                     <label for="gif-bg-color">Color de fondo:</label>
@@ -298,21 +560,59 @@
                                 </div>
                                 <button id="export-gif-button" disabled>Descargar GIF</button>
                             </details>
-                            <details class="sub-panel" id="code-export-details"><summary>A Código</summary>
+                            <details class="sub-panel" id="code-export-details">
+                                <summary>A Código</summary>
                                 <div class="input-group">
                                     <label for="export-scale-input">Escala:</label>
                                     <input type="number" id="export-scale-input" value="2" min="0.1" step="0.1">
                                 </div>
                                 <button id="export-code-button" disabled>Generar HTML/CSS</button>
-                                <div id="code-preview-container"><div class="code-editors"><div class="code-editor"><div class="code-editor-header">HTML <button class="copy-button" data-target="html-code-output">Copiar</button></div><div class="code-editor-body"><div class="line-numbers" id="html-line-numbers"></div><pre><code id="html-code-output"></code></pre></div></div><div class="code-editor"><div class="code-editor-header">CSS <button class="copy-button" data-target="css-code-output">Copiar</button></div><div class="code-editor-body"><div class="line-numbers" id="css-line-numbers"></div><pre><code id="css-code-output"></code></pre></div></div></div><div class="live-preview-container"><iframe id="live-preview-iframe" title="Live Preview"></iframe></div></div></details>
-                            <details class="sub-panel"><summary>Datos a JSON</summary><div class="input-group"><label>Formato:</label><select id="json-format-select"><option value="default">Por Defecto</option><option value="phaser3">Phaser 3</option><option value="godot">Godot</option></select></div><div class="code-editor"><div class="code-editor-header">JSON <button class="copy-button" data-target="json-output">Copiar</button></div><div class="code-editor-body"><div class="line-numbers" id="json-line-numbers"></div><pre><code id="json-output"></code></pre></div></div></details>
+                                <div id="code-preview-container">
+                                    <div class="code-editors">
+                                        <div class="code-editor">
+                                            <div class="code-editor-header">HTML <button class="copy-button"
+                                                    data-target="html-code-output">Copiar</button></div>
+                                            <div class="code-editor-body">
+                                                <div class="line-numbers" id="html-line-numbers"></div>
+                                                <pre><code id="html-code-output"></code></pre>
+                                            </div>
+                                        </div>
+                                        <div class="code-editor">
+                                            <div class="code-editor-header">CSS <button class="copy-button"
+                                                    data-target="css-code-output">Copiar</button></div>
+                                            <div class="code-editor-body">
+                                                <div class="line-numbers" id="css-line-numbers"></div>
+                                                <pre><code id="css-code-output"></code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="live-preview-container"><iframe id="live-preview-iframe"
+                                            title="Live Preview"></iframe></div>
+                                </div>
+                            </details>
+                            <details class="sub-panel">
+                                <summary>Datos a JSON</summary>
+                                <div class="input-group"><label>Formato:</label><select id="json-format-select">
+                                        <option value="default">Por Defecto</option>
+                                        <option value="phaser3">Phaser 3</option>
+                                        <option value="godot">Godot</option>
+                                    </select></div>
+                                <div class="code-editor">
+                                    <div class="code-editor-header">JSON <button class="copy-button"
+                                            data-target="json-output">Copiar</button></div>
+                                    <div class="code-editor-body">
+                                        <div class="line-numbers" id="json-line-numbers"></div>
+                                        <pre><code id="json-output"></code></pre>
+                                    </div>
+                                </div>
+                            </details>
                         </div>
                     </details>
                 </div>
             </aside>
         </div>
     </div>
-    
+
     <div id="toast"></div>
 
     <!-- ===== CAMBIO 2: NUEVO INDICADOR DE CARGA AÑADIDO ===== -->
@@ -329,42 +629,42 @@
                 <button id="close-tutorial-modal" class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
-    <div id="tutorial-steps">
-        <div class="tutorial-step" data-step="1">
-            <h3>1. Crear Frame</h3>
-            <img src="tutorial/crear-frame.svg" alt="Crear Frame" class="tutorial-svg">
-            <p>Haz clic y arrastra en un área vacía para crear un nuevo frame.</p>
-        </div>
-        <div class="tutorial-step" data-step="2">
-            <h3>2. Seleccionar/Mover</h3>
-            <img src="tutorial/seleccionar-mover.svg" alt="Seleccionar/Mover" class="tutorial-svg">
-            <p>Haz clic y arrastra un frame para seleccionarlo y moverlo.</p>
-        </div>
-        <div class="tutorial-step" data-step="3">
-            <h3>3. Redimensionar</h3>
-            <img src="tutorial/redimensionar.svg" alt="Redimensionar" class="tutorial-svg">
-            <p>Arrastra los puntos de control para redimensionar el frame.</p>
-        </div>
-        <div class="tutorial-step" data-step="4">
-            <h3>4. Eliminar Frame</h3>
-            <img src="tutorial/eliminar-frame.svg" alt="Eliminar Frame" class="tutorial-svg">
-            <p>Selecciona un frame y presiona 'Supr' para eliminarlo.</p>
-        </div>
-        <div class="tutorial-step" data-step="5">
-            <h3>5. Añadir/Quitar del Clip</h3>
-            <img src="tutorial/anadir-quitar-clip.svg" alt="Añadir/Quitar del Clip" class="tutorial-svg">
-            <p>Doble clic en un sub-frame para añadirlo o quitarlo del clip.</p>
-        </div>
-        <div class="tutorial-step" data-step="6">
-            <h3>6. Divisiones Internas (Slicing)</h3>
-            <img src="tutorial/divisiones-internas.svg" alt="Divisiones Internas" class="tutorial-svg">
-            <p>Un frame se convierte en "Grupo" para poder dividirlo.<br>
-            - Div. Horizontal: Alt + Clic.<br>
-            - Div. Vertical: Ctrl + Clic.<br>
-            - Mover Línea: Arrastra una línea para ajustarla.<br>
-            - Eliminar Línea: Mantén pulsada una línea y presiona 'Supr' o 'Retroceso'.</p>
-        </div>
-    </div>
+                <div id="tutorial-steps">
+                    <div class="tutorial-step" data-step="1">
+                        <h3>1. Crear Frame</h3>
+                        <img src="tutorial/crear-frame.svg" alt="Crear Frame" class="tutorial-svg">
+                        <p>Haz clic y arrastra en un área vacía para crear un nuevo frame.</p>
+                    </div>
+                    <div class="tutorial-step" data-step="2">
+                        <h3>2. Seleccionar/Mover</h3>
+                        <img src="tutorial/seleccionar-mover.svg" alt="Seleccionar/Mover" class="tutorial-svg">
+                        <p>Haz clic y arrastra un frame para seleccionarlo y moverlo.</p>
+                    </div>
+                    <div class="tutorial-step" data-step="3">
+                        <h3>3. Redimensionar</h3>
+                        <img src="tutorial/redimensionar.svg" alt="Redimensionar" class="tutorial-svg">
+                        <p>Arrastra los puntos de control para redimensionar el frame.</p>
+                    </div>
+                    <div class="tutorial-step" data-step="4">
+                        <h3>4. Eliminar Frame</h3>
+                        <img src="tutorial/eliminar-frame.svg" alt="Eliminar Frame" class="tutorial-svg">
+                        <p>Selecciona un frame y presiona 'Supr' para eliminarlo.</p>
+                    </div>
+                    <div class="tutorial-step" data-step="5">
+                        <h3>5. Añadir/Quitar del Clip</h3>
+                        <img src="tutorial/anadir-quitar-clip.svg" alt="Añadir/Quitar del Clip" class="tutorial-svg">
+                        <p>Doble clic en un sub-frame para añadirlo o quitarlo del clip.</p>
+                    </div>
+                    <div class="tutorial-step" data-step="6">
+                        <h3>6. Divisiones Internas (Slicing)</h3>
+                        <img src="tutorial/divisiones-internas.svg" alt="Divisiones Internas" class="tutorial-svg">
+                        <p>Un frame se convierte en "Grupo" para poder dividirlo.<br>
+                            - Div. Horizontal: Alt + Clic.<br>
+                            - Div. Vertical: Ctrl + Clic.<br>
+                            - Mover Línea: Arrastra una línea para ajustarla.<br>
+                            - Eliminar Línea: Mantén pulsada una línea y presiona 'Supr' o 'Retroceso'.</p>
+                    </div>
+                </div>
                 <div class="tutorial-navigation">
                     <button id="prev-step" disabled>Anterior</button>
                     <span id="step-indicator">1 / 5</span>
@@ -414,7 +714,8 @@
             <details class="inspector-section">
                 <summary>Unificar Tamaño</summary>
                 <div>
-                    <p class="help-text">Ajusta los offsets de TODOS los frames para que ocupen un lienzo del mismo tamaño.</p>
+                    <p class="help-text">Ajusta los offsets de TODOS los frames para que ocupen un lienzo del mismo
+                        tamaño.</p>
                     <div id="unify-size-recommendation" class="recommendation-box" style="display: none;">
                         <p>Recomendación (tamaño máximo): <strong id="recommended-size-text"></strong></p>
                         <button id="use-recommended-size-btn">Usar</button>
@@ -466,8 +767,10 @@
                 <button id="close-offset-editor-modal" class="close-btn">&times;</button>
             </div>
             <div class="modal-body" style="text-align: center;">
-                <p class="help-text">Arrastra el sprite para ajustar su posición y/o cambia el tamaño del lienzo de la animación.</p>
-                <div id="offset-editor-canvas-container" style="background-color: var(--ps-bg-dark); border: 1px solid var(--ps-border-dark); display: inline-block; margin-bottom: 15px;">
+                <p class="help-text">Arrastra el sprite para ajustar su posición y/o cambia el tamaño del lienzo de la
+                    animación.</p>
+                <div id="offset-editor-canvas-container"
+                    style="background-color: var(--ps-bg-dark); border: 1px solid var(--ps-border-dark); display: inline-block; margin-bottom: 15px;">
                     <canvas id="offset-editor-canvas" width="300" height="300"></canvas>
                 </div>
                 <div class="input-group" style="justify-content: center; flex-wrap: wrap; gap: 15px;">
@@ -482,16 +785,17 @@
                 </div>
                 <div class="input-group" style="justify-content: center; flex-wrap: wrap; gap: 15px;">
                     <div class="input-group">
-                    <label for="offset-editor-x">Offset X:</label>
-                    <input type="number" id="offset-editor-x" step="0.5" style="width: 80px;">
+                        <label for="offset-editor-x">Offset X:</label>
+                        <input type="number" id="offset-editor-x" step="0.5" style="width: 80px;">
                     </div>
                     <div class="input-group">
-                    <label for="offset-editor-y">Offset Y:</label>
-                    <input type="number" id="offset-editor-y" step="0.5" style="width: 80px;">
+                        <label for="offset-editor-y">Offset Y:</label>
+                        <input type="number" id="offset-editor-y" step="0.5" style="width: 80px;">
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <div class="modal-footer"
+                style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                 <button id="unify-from-editor-btn" class="secondary-btn">Aplicar Tamaño a Todos</button>
                 <div>
                     <button id="cancel-offset-editor-btn" class="secondary-btn">Cancelar</button>
@@ -502,7 +806,7 @@
     </div>
 
     <script>
-        document.querySelector('.collapse-panels-btn').addEventListener('click', function() {
+        document.querySelector('.collapse-panels-btn').addEventListener('click', function () {
             document.querySelector('.photoshop-ui').classList.toggle('panels-collapsed');
             this.textContent = this.textContent === '»' ? '«' : '»';
         });
@@ -511,4 +815,5 @@
     <script type="module" src="js/tutorial.js"></script>
 
 </body>
+
 </html>

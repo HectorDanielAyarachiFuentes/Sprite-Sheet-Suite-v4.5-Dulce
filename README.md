@@ -1,4 +1,4 @@
-# 🚀 Sprite Sheet Suite AYARACHI v4.4
+# 🚀 Sprite Sheet Suite AYARACHI v4.5
 
 <!-- Reemplaza la URL de arriba con una captura de pantalla atractiva de tu herramienta -->
 
@@ -46,13 +46,13 @@ Dentro de la carpeta `img-md/` encontrarás varias hojas de sprites listas para 
 
 | Vista Previa | Nombre del Archivo | GIF de Ejemplo |
 | :---: | :---: | :---: |
-| ![Caminando en perspectiva](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/caminando%20perspectiva.jpg) | `caminando perspectiva.jpg` | *(No disponible)* |
-| ![Hombre caminando 2](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/hombre-caminando-2.png) | `hombre-caminando-2.png` | *(No disponible)* |
-| ![Hombre caminando](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/hombre-caminando.png) | `hombre-caminando.png` | ![GIF de Osama corriendo](https://github.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce/blob/main/img-md/gifs/hombrecaminando.gif?raw=true) |
-| ![Hombre con cuchillo](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/hombre-cuchillo.png) | `hombre-cuchillo.png` | ![GIF de la tortuga](https://github.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce/blob/main/img-md/gifs/hombrecaminandocuchillo.gif?raw=true) |
-| ![Megaman](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/megaman.png) | `megaman.png` | *(No disponible)* |
-| ![Tortuga](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/tortuga.png) | `tortuga.png` | ![GIF de la tortuga](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/gifs/tortuga.gif) |
-| ![Osama corre](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/osama-corre.png) | `osama-corre.png` | ![GIF de Osama corriendo](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce-/main/img-md/gifs/osama.gif) |
+| ![Caminando en perspectiva](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/caminando%20perspectiva.jpg) | `caminando perspectiva.jpg` | *(No disponible)* |
+| ![Hombre caminando 2](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/hombre-caminando-2.png) | `hombre-caminando-2.png` | *(No disponible)* |
+| ![Hombre caminando](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/hombre-caminando.png) | `hombre-caminando.png` | ![GIF hombre caminando](https://github.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/blob/main/img-md/gifs/hombrecaminando.gif?raw=true) |
+| ![Hombre con cuchillo](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/hombre-cuchillo.png) | `hombre-cuchillo.png` | ![GIF hombre cuchillo](https://github.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/blob/main/img-md/gifs/hombrecaminandocuchillo.gif?raw=true) |
+| ![Megaman](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/megaman.png) | `megaman.png` | *(No disponible)* |
+| ![Tortuga](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/tortuga.png) | `tortuga.png` | ![GIF de la tortuga](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/gifs/tortuga.gif) |
+| ![Osama corre](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/osama-corre.png) | `osama-corre.png` | ![GIF de Osama corriendo](https://raw.githubusercontent.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce/main/img-md/gifs/osama.gif) |
 
 ---
 
@@ -60,7 +60,7 @@ Dentro de la carpeta `img-md/` encontrarás varias hojas de sprites listas para 
 
 ¿Quieres una explicación detallada de cómo funciona el código de este proyecto? Haz clic en el siguiente botón para ver una documentación interactiva generada con DeepWiki.
 
-[![Explicación del Código](https://img.shields.io/badge/Explicación_del_Código-DeepWiki-blue?style=for-the-badge)](https://deepwiki.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.4-Dulce)
+[![Explicación del Código](https://img.shields.io/badge/Explicación_del_Código-DeepWiki-blue?style=for-the-badge)](https://deepwiki.com/HectorDanielAyarachiFuentes/Sprite-Sheet-Suite-v4.5-Dulce)
 
 
 ---

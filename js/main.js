@@ -170,6 +170,10 @@ export const App = {
             DOM.welcomeScreen.style.display = 'flex';
             DOM.appContainer.style.visibility = 'hidden';
             document.body.classList.remove('app-loaded');
+            // Resetear estado de carga al volver a la pantalla de bienvenida
+            DOM.dropZone.classList.remove('loading');
+            const _fi = document.getElementById('file-loading-indicator');
+            if (_fi) _fi.classList.add('hidden');
         });
 
         DOM.imageDisplay.onload = () => {
@@ -493,8 +497,19 @@ export const App = {
     handleFile(file) {
         if (!file || !file.type.startsWith('image/')) return;
         AppState.currentFileName = file.name;
+
+        // Mostrar animación de carga en el drop zone
+        const fileIndicator = document.getElementById('file-loading-indicator');
+        DOM.dropZone.classList.add('loading');
+        if (fileIndicator) fileIndicator.classList.remove('hidden');
+
         const reader = new FileReader();
         reader.onload = (e) => { DOM.imageDisplay.src = e.target.result; this.isReloadingFromStorage = false; };
+        reader.onerror = () => {
+            // Revertir si hubo error
+            DOM.dropZone.classList.remove('loading');
+            if (fileIndicator) fileIndicator.classList.add('hidden');
+        };
         reader.readAsDataURL(file);
     },
 

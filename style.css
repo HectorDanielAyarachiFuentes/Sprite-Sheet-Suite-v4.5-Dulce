@@ -21,6 +21,7 @@
 
 /* --- Global Resets & Body --- */
 * { box-sizing: border-box; }
+.hidden { display: none !important; }
 body {
     font-family: var(--font-sans);
     background-color: var(--ps-bg-dark);
@@ -378,12 +379,66 @@ select { width: 100%; flex-grow: 1; }
 }
 #image-loader-label:active { transform: translateY(0); }
 #image-loader { display: none; }
-/* Loading spinner inside drop zone */
+/* ── Drop zone: estado de carga ── */
+#drop-zone.loading { cursor: wait; }
+/* Ocultar contenido normal durante la carga */
+#drop-zone.loading .welcome-svg-banner,
+#drop-zone.loading #welcome-title,
+#drop-zone.loading .welcome-version-name,
+#drop-zone.loading .welcome-features,
+#drop-zone.loading .welcome-drop-text,
+#drop-zone.loading #image-loader-label { display: none; }
+/* Dar altura mínima al content para centrar el indicador */
+#drop-zone.loading .welcome-content {
+    justify-content: center;
+    min-height: 230px;
+    padding: 30px 40px 36px;
+}
+/* Loading indicator — SVG upload animation */
 #file-loading-indicator {
     display: flex; flex-direction: column; align-items: center;
-    gap: 8px; margin-top: 14px; font-size: 12px;
+    gap: 10px; margin-top: 16px; padding-bottom: 4px;
     color: var(--ps-text-medium);
 }
+/* The SVG itself */
+.fl-svg { width: 82px; height: 82px; display: block; overflow: visible; }
+
+/* Cycling text container */
+.fl-text-wrap {
+    position: relative; height: 20px; width: 220px;
+}
+.fl-msg {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-size: 12.5px; font-weight: 500; white-space: nowrap;
+    color: rgba(192,202,245,0.82); opacity: 0;
+    letter-spacing: 0.2px;
+}
+@keyframes fl-cycle {
+    0%,18%  { opacity:0; transform: translateX(-50%) translateY(6px); }
+    25%,58% { opacity:1; transform: translateX(-50%) translateY(0);   }
+    65%,100%{ opacity:0; transform: translateX(-50%) translateY(-6px);}
+}
+.fl-msg-1 { animation: fl-cycle 4.5s ease-in-out 0.0s infinite; }
+.fl-msg-2 { animation: fl-cycle 4.5s ease-in-out 1.5s infinite; }
+.fl-msg-3 { animation: fl-cycle 4.5s ease-in-out 3.0s infinite; }
+
+/* Shimmer progress bar */
+.fl-progress {
+    width: 180px; height: 3px;
+    background: rgba(122,162,247,0.1);
+    border-radius: 3px; overflow: hidden;
+}
+@keyframes fl-progress {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(200%);  }
+}
+.fl-progress-fill {
+    height: 100%; width: 55%;
+    background: linear-gradient(90deg, transparent, #7aa2f7, #c0caf5, #7aa2f7, transparent);
+    border-radius: 3px;
+    animation: fl-progress 1.8s ease-in-out infinite;
+}
+/* Keep .loading-spinner for backward compat (used by other overlays) */
 .loading-spinner {
     width: 26px; height: 26px;
     border: 3px solid rgba(122,162,247,0.18);

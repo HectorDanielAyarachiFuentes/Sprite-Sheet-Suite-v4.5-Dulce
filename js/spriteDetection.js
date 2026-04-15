@@ -72,6 +72,58 @@ function createDetectionWorker() {
                     }
                 };
 
+                // --- CORREGIDO: detectBackgroundColor muestrea el borde completo, igual que el hilo principal ---
+                function detectBackgroundColor(data, w, h) {
+                    const borderPixels = [];
+                    const stepX = Math.max(1, Math.floor(w / 50));
+                    const stepY = Math.max(1, Math.floor(h / 50));
+
+                    for (let x = 0; x < w; x += stepX) {
+                        const topIdx = (0 * w + x) * 4;
+                        const botIdx = ((h - 1) * w + x) * 4;
+                        borderPixels.push([data[topIdx], data[topIdx+1], data[topIdx+2], data[topIdx+3]]);
+                        borderPixels.push([data[botIdx], data[botIdx+1], data[botIdx+2], data[botIdx+3]]);
+                    }
+                    for (let y = 1; y < h - 1; y += stepY) {
+                        const leftIdx = (y * w + 0) * 4;
+                        const rightIdx = (y * w + (w - 1)) * 4;
+                        borderPixels.push([data[leftIdx], data[leftIdx+1], data[leftIdx+2], data[leftIdx+3]]);
+                        borderPixels.push([data[rightIdx], data[rightIdx+1], data[rightIdx+2], data[rightIdx+3]]);
+                    }
+
+                    const colorCounts = {};
+                    const tol = 5;
+                    borderPixels.forEach(color => {
+                        let found = false;
+                        for (const key in colorCounts) {
+                            const ec = key.split(',').map(Number);
+                            if (Math.abs(color[0]-ec[0])<=tol && Math.abs(color[1]-ec[1])<=tol && Math.abs(color[2]-ec[2])<=tol && Math.abs(color[3]-ec[3])<=tol) {
+                                colorCounts[key]++;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) colorCounts[color.join(',')] = 1;
+                    });
+
+                    const mostCommonKey = Object.keys(colorCounts).reduce((a, b) =>
+                        colorCounts[a] > colorCounts[b] ? a : b
+                    );
+                    return mostCommonKey.split(',').map(Number);
+                }
+
+                // --- CORREGIDO: isBackgroundColor con lógica de alpha correcta ---
+                function isBackgroundColor(data, index, bgColor, tolerance) {
+                    const r = data[index], g = data[index + 1], b = data[index + 2], a = data[index + 3];
+                    // Píxel totalmente transparente → siempre es fondo
+                    if (a < 10) return true;
+                    // Si el fondo es transparente, cualquier píxel opaco es sprite
+                    if (bgColor[3] < 10) return false;
+                    // Comparar color usando distancia Manhattan en RGB
+                    const [bgR, bgG, bgB] = bgColor;
+                    return (Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB)) <= tolerance * 3;
+                }
+
                 function processImageData(imageData, config) {
                     const { width: w, height: h } = imageData;
                     const data = imageData.data;
@@ -79,27 +131,59 @@ function createDetectionWorker() {
                     const frames = [];
                     let processedPixels = 0;
 
-                    // Detectar color de fondo
                     const bgColor = detectBackgroundColor(data, w, h);
+
+                    const neighbors = config.use8WayConnectivity
+                        ? [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
+                        : [[-1,0],[1,0],[0,-1],[0,1]];
 
                     for (let y = 0; y < h; y++) {
                         for (let x = 0; x < w; x++) {
                             const i = y * w + x;
                             if (visited[i] || isBackgroundColor(data, i * 4, bgColor, config.tolerance)) continue;
 
-                            const result = floodFill(x, y, w, h, data, visited, bgColor, config);
-                            processedPixels += result.pixelCount;
+                            // --- CORREGIDO: usar índice en lugar de shift() para rendimiento O(1) ---
+                            const queue = [x, y];
+                            visited[i] = 1;
+                            let head = 0;
+                            let minX = x, minY = y, maxX = x, maxY = y;
+                            let pixelCount = 1;
 
-                            if (result.pixelCount >= config.minSpriteSize) {
+                            while (head < queue.length) {
+                                const cx = queue[head++];
+                                const cy = queue[head++];
+
+                                if (cx < minX) minX = cx;
+                                if (cy < minY) minY = cy;
+                                if (cx > maxX) maxX = cx;
+                                if (cy > maxY) maxY = cy;
+
+                                for (const [dx, dy] of neighbors) {
+                                    const nx = cx + dx;
+                                    const ny = cy + dy;
+                                    if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                                        const ni = ny * w + nx;
+                                        if (!visited[ni] && !isBackgroundColor(data, ni * 4, bgColor, config.tolerance)) {
+                                            visited[ni] = 1;
+                                            queue.push(nx, ny);
+                                            pixelCount++;
+                                        }
+                                    }
+                                }
+                            }
+
+                            processedPixels += pixelCount;
+
+                            if (pixelCount >= config.minSpriteSize) {
                                 const newId = frames.length;
                                 frames.push({
                                     id: newId,
                                     name: \`sprite_\${newId}\`,
                                     rect: {
-                                        x: result.minX,
-                                        y: result.minY,
-                                        w: result.maxX - result.minX + 1,
-                                        h: result.maxY - result.minY + 1
+                                        x: Math.max(0, minX - 1),
+                                        y: Math.max(0, minY - 1),
+                                        w: Math.min(w, maxX - minX + 3),
+                                        h: Math.min(h, maxY - minY + 3)
                                     },
                                     type: 'simple'
                                 });
@@ -111,65 +195,6 @@ function createDetectionWorker() {
                         frames,
                         stats: { processedPixels, totalPixels: w * h }
                     };
-                }
-
-                function detectBackgroundColor(data, w, h) {
-                    const corners = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]];
-                    const colors = corners.map(([x, y]) => {
-                        const i = (y * w + x) * 4;
-                        return [data[i], data[i + 1], data[i + 2], data[i + 3]];
-                    });
-                    const colorCounts = {};
-                    colors.forEach(color => {
-                        const key = color.join(',');
-                        colorCounts[key] = (colorCounts[key] || 0) + 1;
-                    });
-                    const mostCommonKey = Object.keys(colorCounts).reduce((a, b) =>
-                        colorCounts[a] > colorCounts[b] ? a : b
-                    );
-                    return mostCommonKey.split(',').map(Number);
-                }
-
-                function isBackgroundColor(data, index, bgColor, tolerance) {
-                    const r = data[index], g = data[index + 1], b = data[index + 2], a = data[index + 3];
-                    if (a === 0) return true;
-                    if (bgColor[3] < 255 && a > 0) return false;
-                    const [bgR, bgG, bgB] = bgColor;
-                    return (Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB)) <= tolerance;
-                }
-
-                function floodFill(startX, startY, w, h, data, visited, bgColor, config) {
-                    const queue = [[startX, startY]];
-                    visited[startY * w + startX] = 1;
-                    let minX = startX, minY = startY, maxX = startX, maxY = startY;
-                    let pixelCount = 1;
-
-                    const neighbors = config.use8WayConnectivity
-                        ? [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]]
-                        : [[-1,0], [1,0], [0,-1], [0,1]];
-
-                    while (queue.length > 0) {
-                        const [cx, cy] = queue.shift();
-                        minX = Math.min(minX, cx);
-                        minY = Math.min(minY, cy);
-                        maxX = Math.max(maxX, cx);
-                        maxY = Math.max(maxY, cy);
-
-                        for (const [dx, dy] of neighbors) {
-                            const nx = cx + dx;
-                            const ny = cy + dy;
-                            if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                                const ni = ny * w + nx;
-                                if (!visited[ni] && !isBackgroundColor(data, ni * 4, bgColor, config.tolerance)) {
-                                    visited[ni] = 1;
-                                    queue.push([nx, ny]);
-                                    pixelCount++;
-                                }
-                            }
-                        }
-                    }
-
-                    return { minX, minY, maxX, maxY, pixelCount };
                 }
             `;
 
@@ -2111,10 +2136,12 @@ function floodFillAlgorithm(imageElement, config) {
             const newFrames = [];
             let processedPixels = 0;
 
-            // Función auxiliar para flood fill optimizado
+            // Función auxiliar para flood fill optimizado (O(n) con índice)
             const floodFill = (startX, startY) => {
-                const queue = [[startX, startY]];
+                // Almacenamos coords planas: [x0, y0, x1, y1, ...]
+                const queue = [startX, startY];
                 visited[startY * w + startX] = 1;
+                let head = 0;
                 let minX = startX, minY = startY, maxX = startX, maxY = startY;
                 let pixelCount = 1;
 
@@ -2122,12 +2149,14 @@ function floodFillAlgorithm(imageElement, config) {
                     ? [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]]
                     : [[-1,0], [1,0], [0,-1], [0,1]];
 
-                while (queue.length > 0) {
-                    const [cx, cy] = queue.shift();
-                    minX = Math.min(minX, cx);
-                    minY = Math.min(minY, cy);
-                    maxX = Math.max(maxX, cx);
-                    maxY = Math.max(maxY, cy);
+                while (head < queue.length) {
+                    const cx = queue[head++];
+                    const cy = queue[head++];
+
+                    if (cx < minX) minX = cx;
+                    if (cy < minY) minY = cy;
+                    if (cx > maxX) maxX = cx;
+                    if (cy > maxY) maxY = cy;
 
                     for (const [dx, dy] of neighbors) {
                         const nx = cx + dx;
@@ -2136,7 +2165,7 @@ function floodFillAlgorithm(imageElement, config) {
                             const ni = ny * w + nx;
                             if (!visited[ni] && !isBackgroundColor(data, ni * 4, bgColor, finalConfig.tolerance)) {
                                 visited[ni] = 1;
-                                queue.push([nx, ny]);
+                                queue.push(nx, ny);
                                 pixelCount++;
                             }
                         }
@@ -2161,10 +2190,11 @@ function floodFillAlgorithm(imageElement, config) {
                             id: newId,
                             name: `sprite_${newId}`,
                             rect: {
-                                x: result.minX,
-                                y: result.minY,
-                                w: result.maxX - result.minX + 1,
-                                h: result.maxY - result.minY + 1
+                                // Añadir 1px de padding al bounding box para no cortar bordes
+                                x: Math.max(0, result.minX - 1),
+                                y: Math.max(0, result.minY - 1),
+                                w: Math.min(w - Math.max(0, result.minX - 1), result.maxX - result.minX + 3),
+                                h: Math.min(h - Math.max(0, result.minY - 1), result.maxY - result.minY + 3)
                             },
                             type: 'simple'
                         });
@@ -2205,8 +2235,8 @@ function aiDetectionAlgorithm(imageElement, config) {
  * @returns {Array} El array de frames filtrado.
  */
 function filterNoisySprites(frames, config) {
-    // No filtrar si hay muy pocos sprites, ya que podrían ser intencionales.
-    if (frames.length < 10) {
+    // Con 1 solo sprite, no hay contexto para filtrar ruido
+    if (frames.length < 2) {
         return frames;
     }
 
@@ -2216,26 +2246,23 @@ function filterNoisySprites(frames, config) {
     const mid = Math.floor(areas.length / 2);
     const medianArea = areas.length % 2 !== 0 ? areas[mid] : (areas[mid - 1] + areas[mid]) / 2;
 
-    // No filtrar si el sprite mediano ya es muy pequeño.
-    if (medianArea < 64) { // ej. menos de 8x8 píxeles
+    // No filtrar si el sprite mediano ya es muy pequeño (probablemente pixel art puro).
+    if (medianArea < 16) { // menos de ~4x4 píxeles
         return frames;
     }
 
-    // Definir un umbral. Los sprites con un área por debajo de esto se consideran ruido.
-    // Usamos una fracción del área mediana. Esto hace que el filtro sea adaptativo.
-    const noiseAreaThreshold = medianArea * 0.1; // 10% del área mediana.
+    // Umbral adaptativo: los sprites menores al 5% del área mediana se consideran ruido.
+    const noiseAreaThreshold = medianArea * 0.05;
 
     const filteredFrames = frames.filter(f => {
         const area = f.rect.w * f.rect.h;
-        // Mantener los sprites que son más grandes que el umbral de ruido.
         return area >= noiseAreaThreshold;
     });
 
-    // Como medida de seguridad, si el filtro elimina demasiados sprites (ej. > 80%), podría ser un error.
-    // En ese caso, es más seguro devolver los frames originales.
+    // Medida de seguridad: si el filtro eliminaría más del 80% de sprites, algo va mal, no filtrar.
     if (filteredFrames.length < frames.length * 0.2) {
         if (config.enableLogging) {
-            console.log("El filtrado eliminaría demasiados sprites. Revirtiendo el filtro.");
+            console.log('El filtrado eliminaría demasiados sprites. Revirtiendo el filtro.');
         }
         return frames;
     }
@@ -2485,10 +2512,13 @@ function colorsSimilar(color1, color2, tolerance) {
  */
 function isBackgroundColor(data, index, bgColor, tolerance) {
     const r = data[index], g = data[index + 1], b = data[index + 2], a = data[index + 3];
-    if (a === 0) return true;
-    if (bgColor[3] < 255 && a > 0) return false;
+    // Píxel totalmente transparente → siempre es fondo
+    if (a < 10) return true;
+    // Si el fondo detectado es transparente, cualquier píxel opaco es sprite
+    if (bgColor[3] < 10) return false;
+    // Comparar color usando distancia Manhattan en RGB (tolerancia más generosa que 1:1)
     const [bgR, bgG, bgB] = bgColor;
-    return (Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB)) <= tolerance;
+    return (Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB)) <= tolerance * 3;
 }
 
 // --- Funciones de utilidad para testing ---

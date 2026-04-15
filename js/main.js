@@ -191,6 +191,14 @@ export const App = {
             if (this.isModifyingImage) {
                 // Image was modified in-place (e.g., background removed)
                 this.isModifyingImage = false;
+
+                // Si fue el borrador de píxeles, solo redibujar silenciosamente
+                if (this.isPixelEraserStroke) {
+                    this.isPixelEraserStroke = false;
+                    CanvasView.drawAll();
+                    return;
+                }
+
                 this.updateAll(true); // Redraw and save state with new image
                 SessionManager.addToHistory(); // Update history thumbnail with the new image
                 const message = this.modificationMessage || 'Imagen modificada con éxito.';
@@ -251,6 +259,14 @@ export const App = {
         DOM.selectToolButton.addEventListener('click', () => this.setActiveTool('select'));
         DOM.createFrameToolButton.addEventListener('click', () => this.setActiveTool('create'));
         DOM.eraserToolButton.addEventListener('click', () => this.setActiveTool('eraser'));
+        DOM.pixelEraserToolButton.addEventListener('click', () => {
+            this.setActiveTool('pixelEraser');
+            this.togglePixelEraserPopup();
+        });
+        DOM.pixelEraserSizeInput.addEventListener('input', (e) => {
+            AppState.pixelEraserSize = parseInt(e.target.value, 10);
+            DOM.pixelEraserSizeValue.textContent = `${AppState.pixelEraserSize}px`;
+        });
         DOM.removeBgToolButton.addEventListener('click', () => this.toggleRemoveBgPopup());
         DOM.applyRemoveBgButton.addEventListener('click', () => this.removeBackground());
         DOM.trimSpritesheetButton.addEventListener('click', () => this.trimSpritesheet());
@@ -519,6 +535,9 @@ export const App = {
         const activeBtn = document.getElementById(`${toolName}-tool-button`);
         if (activeBtn) activeBtn.classList.add('active');
         DOM.canvas.classList.toggle('cursor-eraser', toolName === 'eraser');
+        DOM.canvas.classList.toggle('cursor-pixel-eraser', toolName === 'pixelEraser');
+        // Close any open popup when switching tools (unless it's the pixel eraser which opens its own)
+        if (toolName !== 'pixelEraser') this.hideActivePopup();
     },
 
     clearAll(isInitial = false) {
@@ -630,6 +649,28 @@ export const App = {
         if (this.activeToolPopup) {
             this.activeToolPopup.classList.add('hidden');
             this.activeToolPopup = null;
+        }
+    },
+
+    togglePixelEraserPopup() {
+        const popup = DOM.pixelEraserPopup;
+        if (this.activeToolPopup === popup) {
+            this.hideActivePopup();
+        } else {
+            this.hideActivePopup();
+            const buttonRect = DOM.pixelEraserToolButton.getBoundingClientRect();
+            const margin = 10;
+            const popupHeight = popup.offsetHeight;
+            const windowHeight = window.innerHeight;
+            let topPos = buttonRect.top;
+            if (topPos + popupHeight + margin > windowHeight) {
+                topPos = windowHeight - popupHeight - margin;
+            }
+            topPos = Math.max(margin, topPos);
+            popup.style.top = `${topPos}px`;
+            popup.style.left = `${buttonRect.right + margin}px`;
+            popup.classList.remove('hidden');
+            this.activeToolPopup = popup;
         }
     },
     // --- FIN ---

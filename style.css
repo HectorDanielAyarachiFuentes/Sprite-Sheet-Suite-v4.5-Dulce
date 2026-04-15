@@ -303,7 +303,26 @@ p { margin: 0; }
 #measurement-canvas.cursor-eraser {
     cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='white' stroke='black' stroke-width='1.5' d='M5.5 13.5l5-5l8 8l-5 5l-8-8zM4 15l-1.5 1.5L6 20l1.5-1.5L4 15zm12-9l1.5-1.5L21 8l-1.5 1.5L16 6z'/%3E%3Cpath fill='%23d1d1d1' d='M6.5 12.5l5-5l3 3l-5 5l-3-3z'/%3E%3C/svg%3E") 4 18, auto;
 }
+#measurement-canvas.cursor-pixel-eraser {
+    cursor: none;
+}
 /* --- FIN NUEVO CURSOR --- */
+
+/* Pixel eraser tool button — orange accent to signal image-destructive action */
+#pixel-eraser-tool-button:hover {
+    background: rgba(224, 175, 104, 0.12);
+    border-color: rgba(224, 175, 104, 0.3);
+    color: var(--dulce-gold);
+}
+#pixel-eraser-tool-button.active {
+    background: linear-gradient(135deg,
+        rgba(224, 175, 104, 0.2) 0%,
+        rgba(247, 118, 142, 0.14) 100%);
+    border-color: rgba(224, 175, 104, 0.45);
+    color: var(--dulce-gold);
+    box-shadow: 0 0 12px rgba(224, 175, 104, 0.2),
+                inset 0 0 8px rgba(224, 175, 104, 0.06);
+}
 
 
 /* --- Right Panel Stack --- */

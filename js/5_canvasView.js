@@ -136,6 +136,40 @@ const CanvasView = (() => {
                 CTX.main.lineWidth = 1 / AppState.zoomLevel;
                 CTX.main.strokeRect(InteractionState.newRect.x, InteractionState.newRect.y, InteractionState.newRect.w, InteractionState.newRect.h);
             }
+
+            // --- Pixel Eraser Brush Preview ---
+            if (AppState.activeTool === 'pixelEraser') {
+                const mp = InteractionState.lastMousePos;
+                const r = AppState.pixelEraserSize / 2;
+                const lw = 1.5 / AppState.zoomLevel;
+
+                // Sombra oscura para contraste sobre fondos claros
+                CTX.main.strokeStyle = 'rgba(0, 0, 0, 0.6)';
+                CTX.main.lineWidth = lw * 2.5;
+                CTX.main.setLineDash([]);
+                CTX.main.beginPath();
+                CTX.main.arc(mp.x, mp.y, r, 0, Math.PI * 2);
+                CTX.main.stroke();
+
+                // Círculo blanco punteado principal
+                CTX.main.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+                CTX.main.lineWidth = lw;
+                CTX.main.setLineDash([3 / AppState.zoomLevel, 2 / AppState.zoomLevel]);
+                CTX.main.beginPath();
+                CTX.main.arc(mp.x, mp.y, r, 0, Math.PI * 2);
+                CTX.main.stroke();
+                CTX.main.setLineDash([]);
+
+                // Cruz central pequeña
+                const cs = 2 / AppState.zoomLevel;
+                CTX.main.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+                CTX.main.lineWidth = lw;
+                CTX.main.beginPath();
+                CTX.main.moveTo(mp.x - cs, mp.y); CTX.main.lineTo(mp.x + cs, mp.y);
+                CTX.main.moveTo(mp.x, mp.y - cs); CTX.main.lineTo(mp.x, mp.y + cs);
+                CTX.main.stroke();
+            }
+
             this.drawRulers();
         },
         drawResizeHandles(rect) {

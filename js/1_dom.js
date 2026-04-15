@@ -66,6 +66,10 @@ export const DOM = {
     eraserToolButton: document.getElementById('eraser-tool-button'),
     autoDetectToolButton: document.getElementById('auto-detect-tool-button'),
     removeBgToolButton: document.getElementById('remove-bg-tool-button'),
+    pixelEraserToolButton: document.getElementById('pixel-eraser-tool-button'),
+    pixelEraserPopup: document.getElementById('pixel-eraser-popup'),
+    pixelEraserSizeInput: document.getElementById('pixel-eraser-size'),
+    pixelEraserSizeValue: document.getElementById('pixel-eraser-size-value'),
     trimSpritesheetButton: document.getElementById('trim-spritesheet-button'),
     // --- NUEVO: Popup de opciones para Eliminar Fondo ---
     removeBgPopup: document.getElementById('remove-bg-popup'),

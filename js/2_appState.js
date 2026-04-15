@@ -15,6 +15,7 @@ export const AppState = {
     zoomLevel: 1.0,
     isSnapToGridEnabled: false,
     gridSize: 16,
+    pixelEraserSize: 10,
     animation: {
         isPlaying: false,
         fps: 12,

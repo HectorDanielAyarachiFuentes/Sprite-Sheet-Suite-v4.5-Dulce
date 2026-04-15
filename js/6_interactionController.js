@@ -10,9 +10,11 @@ import { App } from './main.js';
 
 export let InteractionState = {
     isDrawing: false, isDragging: false, isResizing: false, isDraggingSlice: false,
+    isPixelErasing: false, // Para el borrador de píxeles de imagen
     isActionPending: false, // Para el anti-jitter: indica que una acción (arrastrar, redimensionar) puede empezar
     pendingAction: null, // 'drag', 'resize', 'dragSlice'
     startPos: { x: 0, y: 0 },
+    lastMousePos: { x: 0, y: 0 }, // Posición actual del ratón (en coordenadas de imagen)
     newRect: null,
     dragStartFrameRect: null, // Almacena el rect original al iniciar un arrastre
     resizeHandle: null,
@@ -89,6 +91,48 @@ const getSliceAtPos = (pos, frame) => {
         }
     }
     return null;
+};
+
+// --- Pixel Eraser: Borra píxeles directamente de la imagen ---
+let _pixelEraserCanvas = null;
+let _pixelEraserCtx = null;
+let _pixelEraserPending = false;
+
+const erasePixelsAt = (posX, posY) => {
+    const imageEl = DOM.imageDisplay;
+    if (!imageEl || !imageEl.complete || imageEl.naturalWidth === 0) return;
+
+    // Inicializar el canvas temporal si es necesario o si la imagen cambió de tamaño
+    if (!_pixelEraserCanvas || _pixelEraserCanvas.width !== imageEl.naturalWidth || _pixelEraserCanvas.height !== imageEl.naturalHeight) {
+        _pixelEraserCanvas = document.createElement('canvas');
+        _pixelEraserCanvas.width = imageEl.naturalWidth;
+        _pixelEraserCanvas.height = imageEl.naturalHeight;
+        _pixelEraserCtx = _pixelEraserCanvas.getContext('2d');
+    }
+
+    // Dibujar la imagen actual en el canvas
+    _pixelEraserCtx.clearRect(0, 0, _pixelEraserCanvas.width, _pixelEraserCanvas.height);
+    _pixelEraserCtx.drawImage(imageEl, 0, 0);
+
+    // Borrar los píxeles con destination-out (hace transparente)
+    const brushSize = AppState.pixelEraserSize;
+    _pixelEraserCtx.globalCompositeOperation = 'destination-out';
+    _pixelEraserCtx.beginPath();
+    _pixelEraserCtx.arc(posX, posY, brushSize / 2, 0, Math.PI * 2);
+    _pixelEraserCtx.fill();
+    _pixelEraserCtx.globalCompositeOperation = 'source-over';
+
+    // Actualizar la imagen con debounce para no llamar demasiado seguido
+    if (!_pixelEraserPending) {
+        _pixelEraserPending = true;
+        requestAnimationFrame(() => {
+            App.isModifyingImage = true;
+            App.isPixelEraserStroke = true;
+            App.modificationMessage = null;
+            DOM.imageDisplay.src = _pixelEraserCanvas.toDataURL('image/png');
+            _pixelEraserPending = false;
+        });
+    }
 };
 
 const InteractionController = (() => {
@@ -178,6 +222,11 @@ const InteractionController = (() => {
                  if (AppState.isLocked) { UIManager.showToast('Desbloquea los frames para borrar (L)', 'warning'); return; }
                 if (frameAtClick) App.deleteFrame(frameAtClick.id);
                 break;
+            case 'pixelEraser':
+                // Iniciar el borrado de píxeles de la imagen
+                InteractionState.isPixelErasing = true;
+                erasePixelsAt(pos.x, pos.y);
+                return; // No actualizar frames, solo borrar
         }
         
         if (AppState.activeTool !== 'eraser') {
@@ -227,8 +276,19 @@ const InteractionController = (() => {
             }
         } 
         else if (AppState.activeTool === 'create') { DOM.canvas.style.cursor = 'crosshair'; }
+        else if (AppState.activeTool === 'pixelEraser') { DOM.canvas.style.cursor = 'none'; }
         
         DOM.canvas.classList.toggle('cursor-eraser', AppState.activeTool === 'eraser');
+        DOM.canvas.classList.toggle('cursor-pixel-eraser', AppState.activeTool === 'pixelEraser');
+
+        // Actualizar posición del ratón siempre (para el preview del brush)
+        InteractionState.lastMousePos = pos;
+
+        // Si el borrador de píxeles está activo y arrastrando, borrar
+        if (InteractionState.isPixelErasing && AppState.activeTool === 'pixelEraser') {
+            erasePixelsAt(pos.x, pos.y);
+            // Seguimos adelante para que CanvasView.drawAll() dibuje el cursor
+        }
 
         // ... (el resto de la lógica de mousemove no cambia)
         if (InteractionState.isResizing && AppState.selectedFrameId !== null) {
@@ -298,6 +358,11 @@ const InteractionController = (() => {
             }
         }
         
+        // Resetear borrador de píxeles
+        if (InteractionState.isPixelErasing) {
+            InteractionState.isPixelErasing = false;
+            return; // No hace falta updateAll para el borrador de imagen
+        }
         // Resetear todos los estados de interacción
         InteractionState.isDrawing = InteractionState.isDragging = InteractionState.isResizing = InteractionState.isDraggingSlice = false;
         InteractionState.isActionPending = false; InteractionState.pendingAction = null;
@@ -359,6 +424,11 @@ const InteractionController = (() => {
         if (e.key.toLowerCase() === 'v') { e.preventDefault(); App.setActiveTool('select'); }
         if (e.key.toLowerCase() === 'b') { e.preventDefault(); App.removeBackground(); }
         if (e.key.toLowerCase() === 'e') { e.preventDefault(); App.setActiveTool('eraser'); }
+        if (e.key.toLowerCase() === 'p') { 
+            e.preventDefault(); 
+            if (AppState.activeTool === 'pixelEraser') { App.setActiveTool('select'); App.hideActivePopup(); }
+            else { App.setActiveTool('pixelEraser'); App.togglePixelEraserPopup(); }
+        }
         if (e.key.toLowerCase() === 'l') { e.preventDefault(); App.toggleLock(); }
         if (e.key.toLowerCase() === 'g') { 
             e.preventDefault(); 

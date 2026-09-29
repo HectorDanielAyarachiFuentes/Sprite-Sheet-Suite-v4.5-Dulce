@@ -12,56 +12,7 @@ import { ExportManager } from './8_exportManager.js';
 import { SessionManager } from './9_sessionManager.js';
 import { detectSpritesFromImage, detectBackgroundColor, isBackgroundColor } from './spriteDetection.js';
 import { openTutorial } from './tutorial.js';
-
-// --- Zoom Manager (Un pequeño módulo dentro de main) ---
-const ZoomManager = {
-    apply() {
-        DOM.imageContainer.style.transform = `scale(${AppState.zoomLevel})`;
-        DOM.zoomDisplay.textContent = `${Math.round(AppState.zoomLevel * 100)}%`;
-        CanvasView.drawAll();
-    },
-    zoomIn() {
-        AppState.zoomLevel = Math.min(AppState.zoomLevel * 1.25, 16);
-        this.apply();
-    },
-    zoomOut() {
-        AppState.zoomLevel = Math.max(AppState.zoomLevel / 1.25, 0.1);
-        this.apply();
-    },
-    fit() {
-        if (!DOM.imageDisplay.complete || DOM.imageDisplay.naturalWidth === 0) return;
-        const editorRect = DOM.editorArea.getBoundingClientRect();
-        const viewWidth = editorRect.width - 60;
-        const viewHeight = editorRect.height - 60;
-        const scaleX = viewWidth / DOM.imageDisplay.naturalWidth;
-        const scaleY = viewHeight / DOM.imageDisplay.naturalHeight;
-        AppState.zoomLevel = Math.min(scaleX, scaleY, 1);
-        this.apply();
-    },
-    zoomToRect(rect) {
-        if (!rect) return;
-        const editorRect = DOM.editorArea.getBoundingClientRect();
-        // Añadir algo de padding a la vista
-        const viewWidth = editorRect.width - 100;
-        const viewHeight = editorRect.height - 100;
-
-        const scaleX = viewWidth / rect.w;
-        const scaleY = viewHeight / rect.h;
-        
-        // Establecer un nivel de zoom razonable, ni muy cerca ni muy lejos.
-        AppState.zoomLevel = Math.min(scaleX, scaleY, 4); // Zoom máximo 4x
-        this.apply();
-
-        // Ahora, hacer scroll hacia el rectángulo.
-        const scaledRectX = rect.x * AppState.zoomLevel;
-        const scaledRectY = rect.y * AppState.zoomLevel;
-        const scaledW = rect.w * AppState.zoomLevel;
-        const scaledH = rect.h * AppState.zoomLevel;
-
-        DOM.editorArea.scrollLeft = scaledRectX - (editorRect.width / 2) + (scaledW / 2);
-        DOM.editorArea.scrollTop = scaledRectY - (editorRect.height / 2) + (scaledH / 2);
-    }
-};
+import { ZoomManager } from './zoomManager.js';
 
 // --- Simple Growing Packer Algorithm ---
 const GrowingPacker = function() {};
@@ -147,10 +98,17 @@ export const App = {
 
     init() {
         console.log("Aplicación Sprite Sheet iniciada.");
+        window.App = this;
         this.setupEventListeners();
         
+        // Conectar el callback de HistoryManager para desacoplarlo de SessionManager y App
+        HistoryManager.setOnChangeCallback((needsRedraw) => {
+            if (needsRedraw) this.updateAll(false);
+            SessionManager.saveCurrent(false);
+        });
+
         UIManager.setControlsEnabled(false);
-        InteractionController.init();
+        InteractionController.init(this);
         AnimationManager.init();
         ExportManager.init();
         SessionManager.init(); 

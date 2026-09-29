@@ -3,7 +3,7 @@
 
 import { DOM, CTX } from './1_dom.js';
 import { AppState } from './2_appState.js';
-import { InteractionState, getResizeHandles } from './6_interactionController.js';
+import { InteractionState, getResizeHandles } from './interactionState.js';
 
 const CanvasView = (() => {
     const HANDLE_SIZE = 8;

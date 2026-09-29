@@ -1,10 +1,8 @@
 // --- Módulo de Historial (Undo/Redo) ---
-// Encapsula toda la lógica para manejar las pilas de historial.
+// Encapsula toda la lógica para manejar las pilas de historial sin acoplamiento circular.
 
 import { AppState } from './2_appState.js';
-import { SessionManager } from './9_sessionManager.js';
 import { DOM } from './1_dom.js';
-import { App } from './main.js';
 
 // Variables privadas del módulo usando un IIFE (Immediately Invoked Function Expression)
 const HistoryManager = (() => {
@@ -13,6 +11,13 @@ const HistoryManager = (() => {
     let localHistoryStack = [],
         localHistoryIndex = -1,
         localHistoryFrameId = null;
+    let onHistoryChangeCallback = null;
+
+    const notifyChange = (needsRedraw = false) => {
+        if (typeof onHistoryChangeCallback === 'function') {
+            onHistoryChangeCallback(needsRedraw);
+        }
+    };
 
     const updateButtons = () => {
         const localUndo = localHistoryIndex > 0;
@@ -34,12 +39,14 @@ const HistoryManager = (() => {
         localHistoryStack = [];
         localHistoryIndex = -1;
         localHistoryFrameId = null;
-        App.updateAll(false); // Redibujar
-        SessionManager.saveCurrent(false); // Guardar el estado cargado, pero sin la imagen
+        notifyChange(true); // Notificar a los suscriptores (redibujar y persistir sesión)
     };
 
     return {
         updateButtons,
+        setOnChangeCallback: (callback) => {
+            onHistoryChangeCallback = callback;
+        },
         saveGlobalState: () => {
             historyStack = historyStack.slice(0, historyIndex + 1);
             historyStack.push(JSON.stringify({
@@ -52,7 +59,7 @@ const HistoryManager = (() => {
             localHistoryStack = [];
             localHistoryIndex = -1;
             updateButtons(); 
-            SessionManager.saveCurrent(false); // Guardar solo metadatos, no la imagen
+            notifyChange(false); // Guardar metadatos en sesión sin redibujar todo
         },
         saveLocalState: () => {
             const frame = AppState.frames.find(f => f.id === AppState.selectedFrameId);
@@ -69,7 +76,7 @@ const HistoryManager = (() => {
             }));
             localHistoryIndex++;
             updateButtons(); 
-            SessionManager.saveCurrent(false); // Guardar solo metadatos, no la imagen
+            notifyChange(false); // Guardar metadatos en sesión sin redibujar todo
         },
         undo: () => {
             if (localHistoryIndex > 0) {
@@ -80,8 +87,7 @@ const HistoryManager = (() => {
                     frame.hSlices = state.hSlices;
                     frame.vSlices = state.vSlices;
                 }
-                App.updateAll(false); // Redibujar
-                SessionManager.saveCurrent(false); // Guardar el estado deshecho
+                notifyChange(true); // Redibujar y guardar estado deshecho
             } else if (historyIndex > 0) {
                 historyIndex--;
                 loadState(historyStack[historyIndex]);
@@ -96,8 +102,7 @@ const HistoryManager = (() => {
                     frame.hSlices = state.hSlices;
                     frame.vSlices = state.vSlices;
                 }
-                App.updateAll(false); // Redibujar
-                SessionManager.saveCurrent(false); // Guardar el estado rehecho
+                notifyChange(true); // Redibujar y guardar estado rehecho
             } else if (historyIndex < historyStack.length - 1) {
                 historyIndex++;
                 loadState(historyStack[historyIndex]);

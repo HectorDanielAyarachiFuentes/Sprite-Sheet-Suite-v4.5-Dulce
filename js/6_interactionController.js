@@ -6,23 +6,14 @@ import { AppState } from './2_appState.js';
 import { HistoryManager } from './3_historyManager.js';
 import { UIManager } from './4_uiManager.js';
 import { CanvasView } from './5_canvasView.js';
-import { App } from './main.js';
+import { InteractionState, getResizeHandles } from './interactionState.js';
 
-export let InteractionState = {
-    isDrawing: false, isDragging: false, isResizing: false, isDraggingSlice: false,
-    isPixelErasing: false, // Para el borrador de píxeles de imagen
-    isActionPending: false, // Para el anti-jitter: indica que una acción (arrastrar, redimensionar) puede empezar
-    pendingAction: null, // 'drag', 'resize', 'dragSlice'
-    startPos: { x: 0, y: 0 },
-    lastMousePos: { x: 0, y: 0 }, // Posición actual del ratón (en coordenadas de imagen)
-    newRect: null,
-    dragStartFrameRect: null, // Almacena el rect original al iniciar un arrastre
-    resizeHandle: null,
-    draggedSlice: null,
-    HANDLE_SIZE: 8,
-    SLICE_HANDLE_WIDTH: 6,
-    DRAG_THRESHOLD: 4, // Umbral en píxeles para iniciar un arrastre y evitar "jitter"
-};
+export { InteractionState, getResizeHandles };
+
+let appInstance = null;
+export const setApp = (app) => { appInstance = app; };
+const getApp = () => appInstance || (typeof window !== 'undefined' ? window.App : null);
+
 
 const getMousePos = (e) => {
     const rect = DOM.canvas.getBoundingClientRect();
@@ -47,13 +38,6 @@ const getSubFrameAtPos = (pos) => {
 
 const getFrameAtPos = (pos) => AppState.frames.slice().reverse().find(f => pos.x >= f.rect.x && pos.x <= f.rect.x + f.rect.w && pos.y >= f.rect.y && pos.y <= f.rect.y + f.rect.h);
 
-export const getResizeHandles = (rect) => {
-    const { x, y, w, h } = rect;
-    return {
-        tl: { x, y }, tr: { x: x + w, y }, bl: { x, y: y + h }, br: { x: x + w, y: y + h },
-        t: { x: x + w / 2, y }, b: { x: x + w / 2, y: y + h }, l: { x, y: y + h / 2 }, r: { x: x + w, y: y + h / 2 }
-    };
-};
 
 const getHandleAtPos = (pos) => {
     if (AppState.isLocked) return null;
@@ -126,9 +110,12 @@ const erasePixelsAt = (posX, posY) => {
     if (!_pixelEraserPending) {
         _pixelEraserPending = true;
         requestAnimationFrame(() => {
-            App.isModifyingImage = true;
-            App.isPixelEraserStroke = true;
-            App.modificationMessage = null;
+            const app = getApp();
+            if (app) {
+                app.isModifyingImage = true;
+                app.isPixelEraserStroke = true;
+                app.modificationMessage = null;
+            }
             DOM.imageDisplay.src = _pixelEraserCanvas.toDataURL('image/png');
             _pixelEraserPending = false;
         });
@@ -162,7 +149,7 @@ const InteractionController = (() => {
                 }
             }
             HistoryManager.saveLocalState();
-            App.updateAll(false);
+            getApp()?.updateAll(false);
             return;
         }
 
@@ -173,7 +160,7 @@ const InteractionController = (() => {
                     AppState.selectedFrameId = frameAtClick ? frameAtClick.id : null;
                     AppState.selectedSubFrameId = subFrameAtClick ? subFrameAtClick.id : null;
                     AppState.selectedSlice = null; // Deseleccionar slice si los frames están bloqueados
-                    App.updateAll(false);
+                    getApp()?.updateAll(false);
                     return;
                 }
                 
@@ -220,7 +207,7 @@ const InteractionController = (() => {
                 break;
             case 'eraser':
                  if (AppState.isLocked) { UIManager.showToast('Desbloquea los frames para borrar (L)', 'warning'); return; }
-                if (frameAtClick) App.deleteFrame(frameAtClick.id);
+                if (frameAtClick) getApp()?.deleteFrame(frameAtClick.id);
                 break;
             case 'pixelEraser':
                 // Iniciar el borrado de píxeles de la imagen
@@ -230,7 +217,7 @@ const InteractionController = (() => {
         }
         
         if (AppState.activeTool !== 'eraser') {
-            App.updateAll(false);
+            getApp()?.updateAll(false);
         }
     };
     
@@ -353,7 +340,7 @@ const InteractionController = (() => {
             if (InteractionState.newRect.w < 0) { InteractionState.newRect.x += InteractionState.newRect.w; InteractionState.newRect.w *= -1; }
             if (InteractionState.newRect.h < 0) { InteractionState.newRect.y += InteractionState.newRect.h; InteractionState.newRect.h *= -1; }
             if (InteractionState.newRect.w > 4 && InteractionState.newRect.h > 4) {
-                App.addNewFrame(InteractionState.newRect);
+                getApp()?.addNewFrame(InteractionState.newRect);
                 stateChanged = true;
             }
         }
@@ -368,7 +355,7 @@ const InteractionController = (() => {
         InteractionState.isActionPending = false; InteractionState.pendingAction = null;
         InteractionState.newRect = InteractionState.resizeHandle = InteractionState.draggedSlice = InteractionState.dragStartFrameRect = null;
         
-        App.updateAll(stateChanged);
+        getApp()?.updateAll(stateChanged);
     };
 
     const handleDoubleClick = (e) => {
@@ -388,7 +375,7 @@ const InteractionController = (() => {
                 clip.frameIds.push(subFrame.id);
                 UIManager.showToast(`Frame F${subFrame.id} añadido a "${clip.name}".`, 'success');
             }
-            App.updateAll(false);
+            getApp()?.updateAll(false);
         }
     };
     const handleKeyDown = (e) => {
@@ -409,27 +396,27 @@ const InteractionController = (() => {
                     }
                     AppState.selectedSlice = null; // Deseleccionar
                     HistoryManager.saveLocalState(); // Guardar el cambio en el historial local del frame
-                    App.updateAll(false);
+                    getApp()?.updateAll(false);
                 }
             }
             // Prioridad 2: Si no hay línea, borrar el frame seleccionado
             else if (AppState.selectedFrameId !== null) {
-                App.deleteFrame(AppState.selectedFrameId);
+                getApp()?.deleteFrame(AppState.selectedFrameId);
             }
         }
         
         if (e.ctrlKey && e.key.toLowerCase() === 'z') { e.preventDefault(); HistoryManager.undo(); }
         if (e.ctrlKey && e.key.toLowerCase() === 'y') { e.preventDefault(); HistoryManager.redo(); }
-        if (e.key.toLowerCase() === 'c') { e.preventDefault(); App.setActiveTool('create'); }
-        if (e.key.toLowerCase() === 'v') { e.preventDefault(); App.setActiveTool('select'); }
-        if (e.key.toLowerCase() === 'b') { e.preventDefault(); App.removeBackground(); }
-        if (e.key.toLowerCase() === 'e') { e.preventDefault(); App.setActiveTool('eraser'); }
-        if (e.key.toLowerCase() === 'p') { 
-            e.preventDefault(); 
-            if (AppState.activeTool === 'pixelEraser') { App.setActiveTool('select'); App.hideActivePopup(); }
-            else { App.setActiveTool('pixelEraser'); App.togglePixelEraserPopup(); }
+        if (e.key.toLowerCase() === 'c') { e.preventDefault(); getApp()?.setActiveTool('create'); }
+        if (e.key.toLowerCase() === 'v') { e.preventDefault(); getApp()?.setActiveTool('select'); }
+        if (e.key.toLowerCase() === 'b') { e.preventDefault(); getApp()?.removeBackground(); }
+        if (e.key.toLowerCase() === 'e') { e.preventDefault(); getApp()?.setActiveTool('eraser'); }
+        if (e.key.toLowerCase() === 'p') {
+            e.preventDefault();
+            if (AppState.activeTool === 'pixelEraser') { getApp()?.setActiveTool('select'); getApp()?.hideActivePopup(); }
+            else { getApp()?.setActiveTool('pixelEraser'); getApp()?.togglePixelEraserPopup(); }
         }
-        if (e.key.toLowerCase() === 'l') { e.preventDefault(); App.toggleLock(); }
+        if (e.key.toLowerCase() === 'l') { e.preventDefault(); getApp()?.toggleLock(); }
         if (e.key.toLowerCase() === 'g') { 
             e.preventDefault(); 
             DOM.snapToGridCheckbox.checked = !DOM.snapToGridCheckbox.checked;
@@ -438,7 +425,8 @@ const InteractionController = (() => {
     };
     
     return {
-        init() {
+        init(app) {
+            if (app) appInstance = app;
             DOM.canvas.addEventListener('mousedown', handleMouseDown);
             DOM.canvas.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);

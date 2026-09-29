@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2335"/>
+      <stop offset="100%" stop-color="#16161e"/>
+    </linearGradient>
+  </defs>
+  <!-- Contenedor redondeado oscuro -->
+  <rect width="32" height="32" rx="8" fill="url(#bg)"/>
+  <rect x="0.75" y="0.75" width="30.5" height="30.5" rx="7.25" fill="none" stroke="#7aa2f7" stroke-opacity="0.3" stroke-width="1.5"/>
+  <!-- 4 bloques del tema Dulce (Sprite Sheet 2x2) -->
+  <rect x="5" y="5" width="10" height="10" rx="2.5" fill="#7aa2f7"/>
+  <rect x="17" y="5" width="10" height="10" rx="2.5" fill="#bb9af7"/>
+  <rect x="5" y="17" width="10" height="10" rx="2.5" fill="#f7768e"/>
+  <rect x="17" y="17" width="10" height="10" rx="2.5" fill="#73daca"/>
+</svg>
